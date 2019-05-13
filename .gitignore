@@ -1,5 +1,6 @@
 HELP.md
-/target/
+*/target/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -19,11 +20,14 @@ HELP.md
 
 ### NetBeans ###
 /nbproject/private/
+
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 /build/
+
+secrets.conf
 
 ### VS Code ###
 .vscode/
