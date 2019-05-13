@@ -110,15 +110,15 @@ sendMoarSpams() {
   echo $spam
 }
 
-makeConfig health-apis-mock-ee $PROFILE
-configValue health-apis-mock-ee $PROFILE ee.header.password "$EE_HEADER_PASSWORD"
-configValue health-apis-mock-ee $PROFILE ee.header.username "$EE_HEADER_USERNAME"
-configValue health-apis-mock-ee $PROFILE ee.truststore.password "$EE_TRUSTSTORE_PASSWORD"
-configValue health-apis-mock-ee $PROFILE ee.truststore.path "eligibilityandenrollment-nonprod-truststore.jks"
-configValue health-apis-mock-ee $PROFILE ee.db-host "$DB_HOST"
-configValue health-apis-mock-ee $PROFILE ee.db-port "$DB_PORT"
-configValue health-apis-mock-ee $PROFILE ee.db-password "$DB_PASSWORD"
-configValue health-apis-mock-ee $PROFILE ee.db-user "$DB_USER"
-configValue health-apis-mock-ee $PROFILE ee.database "$DATABASE"
+makeConfig mock-ee $PROFILE
+configValue mock-ee $PROFILE ee.header.password "$EE_HEADER_PASSWORD"
+configValue mock-ee $PROFILE ee.header.username "$EE_HEADER_USERNAME"
+configValue mock-ee $PROFILE ee.truststore.password "$EE_TRUSTSTORE_PASSWORD"
+configValue mock-ee $PROFILE ee.truststore.path "eligibilityandenrollment-nonprod-truststore.jks"
+configValue mock-ee $PROFILE ee.db-host "$DB_HOST"
+configValue mock-ee $PROFILE ee.db-port "$DB_PORT"
+configValue mock-ee $PROFILE ee.db-password "$DB_PASSWORD"
+configValue mock-ee $PROFILE ee.db-user "$DB_USER"
+configValue mock-ee $PROFILE ee.database "$DATABASE"
 
-checkForUnsetValues health-apis-mock-ee $PROFILE
+checkForUnsetValues mock-ee $PROFILE
