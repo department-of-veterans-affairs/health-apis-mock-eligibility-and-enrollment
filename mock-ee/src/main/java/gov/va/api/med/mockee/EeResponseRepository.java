@@ -32,13 +32,13 @@ public class EeResponseRepository {
   private Log log = LogFactory.getLog(getClass());
 
   /** Get EE Response for corresponding ICN. */
-  public String findEeResponse(String icn, String requestName) {
+  public String findEeResponse(String icn) {
     Assert.notNull(icn, "The icn must not be null");
-    String summary = queryDatabase(icn, requestName);
+    String summary = queryDatabase(icn);
     return summary;
   }
 
-  String queryDatabase(String icn, String eeRequestName) {
+  String queryDatabase(String icn) {
     ResultSet resultSet;
     String resultString = "";
     String connectionString =

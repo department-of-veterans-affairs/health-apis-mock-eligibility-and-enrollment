@@ -31,8 +31,7 @@ public class EeSummaryEndpoint {
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) throws JAXBException {
     final String icn = request.getValue().getKey();
-    final String requestName = request.getValue().getRequestName();
-    final String payload = repository.findEeResponse(icn, requestName);
+    final String payload = repository.findEeResponse(icn);
 
     return JAXBContext.newInstance(GetEESummaryResponse.class)
         .createUnmarshaller()
