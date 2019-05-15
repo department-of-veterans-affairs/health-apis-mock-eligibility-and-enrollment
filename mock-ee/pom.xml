@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
   </parent>
   <groupId>gov.va.api.med.mockee</groupId>
   <artifactId>health-apis-mock-ee</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.2</version>
   <name>health-apis-mock-ee</name>
   <description>Provides mock as if it was EandE data for Queen Elizabeth</description>
   <properties>
