@@ -66,12 +66,8 @@ public class EeResponseRepository {
     try (Connection connection = DriverManager.getConnection(connectionString)) {
       PreparedStatement statement =
           connection.prepareStatement(
-              "Select * from [OIT_Lighthouse].[synthea].[ee_summaries] where ICN = ? and "
-                  + "eeUsername = ? and eePassword = ? and eeRequestName  = ?");
+              "Select * from [OIT_Lighthouse].[synthea].[ee_summaries] where ICN = ?");
       statement.setString(1, icn);
-      statement.setString(2, mockEeUsername);
-      statement.setString(3, mockEePassword);
-      statement.setString(4, eeRequestName);
       resultSet = statement.executeQuery();
       // always need to do at least one next to get to the data. This should only ever have one
       // response.
