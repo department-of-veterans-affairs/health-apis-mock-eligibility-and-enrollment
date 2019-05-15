@@ -29,10 +29,6 @@ public class EeResponseRepository {
   @Value("${ee.database}")
   private String database;
 
-  private String mockEeUsername = "labMockEEUsername";
-
-  private String mockEePassword = "labMockEEPassword";
-
   private Log log = LogFactory.getLog(getClass());
 
   /** Get EE Response for corresponding ICN. */
