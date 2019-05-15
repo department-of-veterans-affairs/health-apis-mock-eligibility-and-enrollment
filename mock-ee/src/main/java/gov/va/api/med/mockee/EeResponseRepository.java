@@ -29,20 +29,16 @@ public class EeResponseRepository {
   @Value("${ee.database}")
   private String database;
 
-  private String mockEeUsername = "labMockEEUsername";
-
-  private String mockEePassword = "labMockEEPassword";
-
   private Log log = LogFactory.getLog(getClass());
 
   /** Get EE Response for corresponding ICN. */
-  public String findEeResponse(String icn, String requestName) {
+  public String findEeResponse(String icn) {
     Assert.notNull(icn, "The icn must not be null");
-    String summary = queryDatabase(icn, requestName);
+    String summary = queryDatabase(icn);
     return summary;
   }
 
-  String queryDatabase(String icn, String eeRequestName) {
+  String queryDatabase(String icn) {
     ResultSet resultSet;
     String resultString = "";
     String connectionString =
@@ -66,12 +62,8 @@ public class EeResponseRepository {
     try (Connection connection = DriverManager.getConnection(connectionString)) {
       PreparedStatement statement =
           connection.prepareStatement(
-              "Select * from [OIT_Lighthouse].[synthea].[ee_summaries] where ICN = ? and "
-                  + "eeUsername = ? and eePassword = ? and eeRequestName  = ?");
+              "Select * from [OIT_Lighthouse].[synthea].[ee_summaries] where ICN = ?");
       statement.setString(1, icn);
-      statement.setString(2, mockEeUsername);
-      statement.setString(3, mockEePassword);
-      statement.setString(4, eeRequestName);
       resultSet = statement.executeQuery();
       // always need to do at least one next to get to the data. This should only ever have one
       // response.
