@@ -8,7 +8,7 @@
   </parent>
   <groupId>gov.va.api.med.mockee</groupId>
   <artifactId>health-apis-mock-ee</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <name>health-apis-mock-ee</name>
   <description>Provides mock as if it was EandE data for Queen Elizabeth</description>
   <properties>
