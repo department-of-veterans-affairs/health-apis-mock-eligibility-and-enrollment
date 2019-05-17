@@ -14,7 +14,7 @@
     <ee-artifacts.version>1.1.37</ee-artifacts.version>
     <java.version>1.8</java.version>
     <build-info-maven-plugin.version>1.2</build-info-maven-plugin.version>
-    <jacoco.coverage>0.01</jacoco.coverage>
+    <jacoco.coverage>0.95</jacoco.coverage>
     <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
     <docker.organization>vasdvp</docker.organization>
     <docker.baseImage>vasdvp/health-apis-application-base</docker.baseImage>
@@ -22,6 +22,10 @@
     <docker.tag>latest</docker.tag>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web-services</artifactId>
