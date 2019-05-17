@@ -19,8 +19,6 @@ Secrets Configuration
  -  DB_PASSWORD
  -  DB_USER
  -  DATABASE
- -  EE_TRUSTSTORE_PASSWORD
- -  EE_TRUSTSTORE_PATH
 
 $1
 EOF
@@ -57,8 +55,6 @@ MISSING_SECRETS=false
 [ -z "$DB_PASSWORD" ] && echo "Missing configuration: DB_PASSWORD" && MISSING_SECRETS=true
 [ -z "$DB_USER" ] && echo "Missing configuration: DB_USER" && MISSING_SECRETS=true
 [ -z "$DATABASE" ] && echo "Missing configuration: DATABASE" && MISSING_SECRETS=true
-[ -z "$EE_TRUSTSTORE_PASSWORD" ] && echo "Missing configuration: EE_TRUSTSTORE_PASSWORD" && MISSING_SECRETS=true
-[ -z "$EE_TRUSTSTORE_PATH" ] && echo "Missing configuration: EE_TRUSTSTORE_PATH" && MISSING_SECRETS=true
 [ $MISSING_SECRETS == true ] && usage "Missing configuration secrets, please update $SECRETS"
 
 makeConfig() {
@@ -107,8 +103,6 @@ sendMoarSpams() {
 }
 
 makeConfig mock-ee $PROFILE
-configValue mock-ee $PROFILE ee.truststore.password "$EE_TRUSTSTORE_PASSWORD"
-configValue mock-ee $PROFILE ee.truststore.path "eligibilityandenrollment-nonprod-truststore.jks"
 configValue mock-ee $PROFILE ee.db-host "$DB_HOST"
 configValue mock-ee $PROFILE ee.db-port "$DB_PORT"
 configValue mock-ee $PROFILE ee.db-password "$DB_PASSWORD"
