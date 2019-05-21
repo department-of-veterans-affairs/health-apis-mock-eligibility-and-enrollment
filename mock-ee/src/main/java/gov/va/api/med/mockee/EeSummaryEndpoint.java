@@ -7,9 +7,9 @@ import java.io.StringReader;
 import java.sql.SQLException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -31,14 +31,14 @@ public class EeSummaryEndpoint {
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getEESummaryRequest")
   @ResponsePayload
+  @SneakyThrows
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
-      @RequestPayload JAXBElement<GetEESummaryRequest> request) throws JAXBException, SQLException {
+      @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
     String payload = repository.findEeResponse(icn);
 
     if (payload.isEmpty()) {
-      ObjectFactory objectFactory = new ObjectFactory();
-      return objectFactory.createGetEESummaryResponse(new GetEESummaryResponse());
+      return new ObjectFactory().createGetEESummaryResponse(new GetEESummaryResponse());
     }
 
     return JAXBContext.newInstance(GetEESummaryResponse.class)

@@ -2,11 +2,17 @@ package gov.va.api.med.mockee;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Builder
 @Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class ConnectionGenerator {
 
   @Value("${ee.db-host}")
@@ -21,21 +27,19 @@ public class ConnectionGenerator {
   @Value("${ee.db-user}")
   private String dbUser;
 
-  @Value("${ee.database}")
-  private String database;
-
-  Connection generateConnection() throws SQLException {
+  @SneakyThrows
+  Connection generateConnection() {
     return DriverManager.getConnection(generateConnectionString());
   }
 
-  final String generateConnectionString() {
+  String generateConnectionString() {
     return "jdbc:sqlserver://"
         + dbHost
         + ":"
         + dbPort
         + ";"
         + "database="
-        + database
+        + "OIT_Lighthouse"
         + ";"
         + "user="
         + dbUser

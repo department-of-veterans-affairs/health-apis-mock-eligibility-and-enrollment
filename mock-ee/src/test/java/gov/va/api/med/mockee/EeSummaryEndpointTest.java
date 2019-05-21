@@ -10,15 +10,15 @@ import gov.va.med.esr.webservices.jaxws.schemas.VceEligibilityInfo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import lombok.SneakyThrows;
 import org.junit.Test;
 
 public class EeSummaryEndpointTest {
 
   @Test
-  public void correctSummaryResponse() throws JAXBException, SQLException {
+  @SneakyThrows
+  public void correctSummaryResponse() {
     String expectedEeSummaryResponse =
         "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\r\\n"
             + "            <eesVersion>5.6.0.01001</eesVersion>\\r\\n"
@@ -78,7 +78,8 @@ public class EeSummaryEndpointTest {
   }
 
   @Test
-  public void noEntriesAreFound() throws SQLException, JAXBException {
+  @SneakyThrows
+  public void noEntriesAreFound() {
     ResultSet testResultSet = mock(ResultSet.class);
     when(testResultSet.getString("payload")).thenReturn("");
 
