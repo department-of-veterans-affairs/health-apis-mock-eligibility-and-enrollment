@@ -18,7 +18,6 @@ Secrets Configuration
  -  DB_PORT
  -  DB_PASSWORD
  -  DB_USER
- -  DATABASE
 
 $1
 EOF
@@ -54,7 +53,6 @@ MISSING_SECRETS=false
 [ -z "$DB_PORT" ] && echo "Missing configuration: DB_PORT" && MISSING_SECRETS=true
 [ -z "$DB_PASSWORD" ] && echo "Missing configuration: DB_PASSWORD" && MISSING_SECRETS=true
 [ -z "$DB_USER" ] && echo "Missing configuration: DB_USER" && MISSING_SECRETS=true
-[ -z "$DATABASE" ] && echo "Missing configuration: DATABASE" && MISSING_SECRETS=true
 [ $MISSING_SECRETS == true ] && usage "Missing configuration secrets, please update $SECRETS"
 
 makeConfig() {
@@ -107,6 +105,5 @@ configValue mock-ee $PROFILE ee.db-host "$DB_HOST"
 configValue mock-ee $PROFILE ee.db-port "$DB_PORT"
 configValue mock-ee $PROFILE ee.db-password "$DB_PASSWORD"
 configValue mock-ee $PROFILE ee.db-user "$DB_USER"
-configValue mock-ee $PROFILE ee.database "$DATABASE"
 
 checkForUnsetValues mock-ee $PROFILE
