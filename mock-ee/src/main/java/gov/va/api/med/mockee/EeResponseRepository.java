@@ -3,7 +3,6 @@ package gov.va.api.med.mockee;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,7 @@ public class EeResponseRepository {
 
   private ConnectionGenerator connectionGenerator;
 
-  /**
-   * Get EE Response for corresponding ICN.
-   *
-   * @throws SQLException when there's an problem accessing the database
-   */
-  @SneakyThrows
+  /** Get EE Response for corresponding ICN. */
   public String findEeResponse(String icn) {
     Assert.notNull(icn, "The icn must not be null");
     String summary = queryDatabase(icn);
@@ -39,7 +33,7 @@ public class EeResponseRepository {
           // always need to do at least one next to get to the data. This should only ever have one
           // response.
           resultSet.next();
-          return (resultSet.getString("payload"));
+          return resultSet.getString("payload");
         }
       }
     }

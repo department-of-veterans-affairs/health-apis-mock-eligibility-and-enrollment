@@ -38,8 +38,7 @@ public class ConnectionGenerator {
         + ":"
         + dbPort
         + ";"
-        + "database="
-        + "OIT_Lighthouse"
+        + "database=OIT_Lighthouse"
         + ";"
         + "user="
         + dbUser
