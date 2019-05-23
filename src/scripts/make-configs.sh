@@ -17,7 +17,6 @@ Secrets Configuration
  -  DB_URL
  -  DB_PASSWORD
  -  DB_USER
- -  DB_DRIVER
 
 $1
 EOF
@@ -52,7 +51,6 @@ MISSING_SECRETS=false
 [ -z "$DB_URL" ] && echo "Missing configuration: DB_URL" && MISSING_SECRETS=true
 [ -z "$DB_PASSWORD" ] && echo "Missing configuration: DB_PASSWORD" && MISSING_SECRETS=true
 [ -z "$DB_USER" ] && echo "Missing configuration: DB_USER" && MISSING_SECRETS=true
-[ -z "$DB_DRIVER" ] && echo "Missing configuration: DB_DRIVER" && MISSING_SECRETS=true
 [ $MISSING_SECRETS == true ] && usage "Missing configuration secrets, please update $SECRETS"
 
 makeConfig() {
@@ -104,6 +102,5 @@ makeConfig mock-ee $PROFILE
 configValue mock-ee $PROFILE spring.datasource.url "$DB_URL"
 configValue mock-ee $PROFILE spring.datasource.password "$DB_PASSWORD"
 configValue mock-ee $PROFILE spring.datasource.username "$DB_USER"
-configValue mock-ee $PROFILE spring.datasource.driver-class-name "$DB_DRIVER"
 
 checkForUnsetValues mock-ee $PROFILE

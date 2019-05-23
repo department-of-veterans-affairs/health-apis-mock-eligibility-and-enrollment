@@ -2,7 +2,6 @@ package gov.va.api.med.mockee;
 
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
-import gov.va.med.esr.webservices.jaxws.schemas.ObjectFactory;
 import java.io.StringReader;
 import java.sql.SQLException;
 import javax.persistence.EntityManager;
@@ -23,7 +22,7 @@ public class EeSummaryEndpoint {
 
   private static final String NAMESPACE_URI = "http://jaxws.webservices.esr.med.va.gov/schemas";
 
-  EntityManager entityManager;
+  private EntityManager entityManager;
 
   /**
    * Get EE Summary Response.
@@ -36,11 +35,16 @@ public class EeSummaryEndpoint {
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
-    String payload = entityManager.find(EeResponseEntity.class, icn).payload();
 
-    if (payload.isEmpty()) {
-      return new ObjectFactory().createGetEESummaryResponse(new GetEESummaryResponse());
+    String payload = "";
+
+    EeResponseEntity responseEntity = entityManager.find(EeResponseEntity.class, icn);
+
+    if (responseEntity == null) {
+      throw new Exceptions.UnknownPatientIcnException(icn, new RuntimeException());
     }
+
+    payload = responseEntity.payload();
 
     return JAXBContext.newInstance(GetEESummaryResponse.class)
         .createUnmarshaller()

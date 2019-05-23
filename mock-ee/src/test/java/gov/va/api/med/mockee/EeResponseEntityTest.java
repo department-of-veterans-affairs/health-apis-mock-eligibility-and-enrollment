@@ -7,14 +7,6 @@ import org.junit.Test;
 public class EeResponseEntityTest {
 
   @Test
-  public void bothIcnsAreNull() {
-    EeResponseEntity nullQueriedResponse =
-        EeResponseEntity.builder().payload("queryPayload").build();
-    EeResponseEntity nullTestResponse = EeResponseEntity.builder().payload("testPayload").build();
-    assertThat(nullQueriedResponse.equals(nullTestResponse)).isTrue();
-  }
-
-  @Test
   public void equalIcnsReturnsTrue() {
     EeResponseEntity queriedResponse =
         EeResponseEntity.builder().icn("1234").payload("expectedPayload").build();
@@ -27,7 +19,7 @@ public class EeResponseEntityTest {
   public void hashcodeCalculatesCorrectly() {
     EeResponseEntity testResponse =
         EeResponseEntity.builder().icn("1234").payload("testPayload").build();
-    int expectedHashcode = 1509473;
+    int expectedHashcode = 1509501;
     assertThat(testResponse.hashCode()).isEqualTo(expectedHashcode);
   }
 
@@ -41,34 +33,11 @@ public class EeResponseEntityTest {
   }
 
   @Test
-  public void nullIcnHashcodeCalculatesCorrectly() {
-    EeResponseEntity testResponse = EeResponseEntity.builder().payload("testPayload").build();
-    int expectedHashcode = 31;
-    assertThat(testResponse.hashCode()).isEqualTo(expectedHashcode);
-  }
-
-  @Test
   public void nullIcnReturnsFalse() {
     EeResponseEntity nullQueriedResponse = new EeResponseEntity();
     EeResponseEntity testResponse =
         EeResponseEntity.builder().icn("1234").payload("expectedPayload").build();
     assertThat(nullQueriedResponse.equals(testResponse)).isFalse();
-  }
-
-  @Test
-  public void nullResponseReturnsFalse() {
-    EeResponseEntity queriedResponse =
-        EeResponseEntity.builder().icn("1234").payload("testPayload").build();
-    EeResponseEntity testResponse = null;
-    assertThat(queriedResponse.equals(testResponse)).isFalse();
-  }
-
-  @Test
-  public void objsAreTheSameReturnsTrue() {
-    EeResponseEntity queriedResponse =
-        EeResponseEntity.builder().icn("1234").payload("testPayload").build();
-    EeResponseEntity testResponse = queriedResponse;
-    assertThat(queriedResponse.equals(testResponse)).isTrue();
   }
 
   @Test
@@ -78,13 +47,5 @@ public class EeResponseEntityTest {
     EeResponseEntity unequalResponse =
         EeResponseEntity.builder().icn("4321").payload("unexpectedPayload").build();
     assertThat(queriedResponse.equals(unequalResponse)).isFalse();
-  }
-
-  @Test
-  public void unequalClassReturnsFalse() {
-    EeResponseEntity queriedResponse =
-        EeResponseEntity.builder().icn("1234").payload("testPayload").build();
-    String testResponse = "testString";
-    assertThat(queriedResponse.equals(testResponse)).isFalse();
   }
 }

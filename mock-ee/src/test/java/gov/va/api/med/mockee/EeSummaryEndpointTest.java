@@ -37,12 +37,12 @@ public class EeSummaryEndpointTest {
     VceEligibilityInfo expectedEligibilityInfo =
         VceEligibilityInfo.builder().vceCode("X").vceDescription("Ineligible").build();
 
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(null);
-    testEndpoint.entityManager = mock(EntityManager.class);
-
-    when(testEndpoint.entityManager.find(EeResponseEntity.class, "1000003"))
+    EntityManager mockEntityManager = mock(EntityManager.class);
+    when(mockEntityManager.find(EeResponseEntity.class, "1000003"))
         .thenReturn(
             EeResponseEntity.builder().icn("1000003").payload(expectedEeSummaryResponse).build());
+
+    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(mockEntityManager);
 
     GetEESummaryRequest xmlRequest = GetEESummaryRequest.builder().key("1000003").build();
 
@@ -63,21 +63,20 @@ public class EeSummaryEndpointTest {
         .isEqualTo(expectedEligibilityInfo.getVceCode());
   }
 
-  @Test
+  @Test(expected = Exceptions.UnknownPatientIcnException.class)
   public void noEntriesAreFound() {
 
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(null);
-    testEndpoint.entityManager = mock(EntityManager.class);
+    EntityManager mockEntityManager = mock(EntityManager.class);
+    when(mockEntityManager.find(EeResponseEntity.class, "100")).thenReturn(null);
 
-    when(testEndpoint.entityManager.find(EeResponseEntity.class, "invalid-icn"))
-        .thenReturn(EeResponseEntity.builder().icn("invalid-icn").payload("").build());
+    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(mockEntityManager);
 
-    GetEESummaryRequest xmlRequest = GetEESummaryRequest.builder().key("invalid-icn").build();
+    GetEESummaryRequest xmlRequest = GetEESummaryRequest.builder().key("100").build();
 
     ObjectFactory objectFactory = new ObjectFactory();
 
     JAXBElement<GetEESummaryRequest> request = objectFactory.createGetEESummaryRequest(xmlRequest);
 
-    assertThat(testEndpoint.getEeSummaryRequest(request).getValue().getSummary()).isNull();
+    testEndpoint.getEeSummaryRequest(request);
   }
 }
