@@ -7,17 +7,13 @@ import static org.mockito.Mockito.when;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.ObjectFactory;
 import gov.va.med.esr.webservices.jaxws.schemas.VceEligibilityInfo;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBElement;
-import lombok.SneakyThrows;
 import org.junit.Test;
 
 public class EeSummaryEndpointTest {
 
   @Test
-  @SneakyThrows
   public void correctSummaryResponse() {
     String expectedEeSummaryResponse =
         "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\r\\n"
@@ -41,22 +37,12 @@ public class EeSummaryEndpointTest {
     VceEligibilityInfo expectedEligibilityInfo =
         VceEligibilityInfo.builder().vceCode("X").vceDescription("Ineligible").build();
 
-    ResultSet testResultSet = mock(ResultSet.class);
-    when(testResultSet.getString("payload")).thenReturn(expectedEeSummaryResponse);
+    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(null);
+    testEndpoint.entityManager = mock(EntityManager.class);
 
-    PreparedStatement testPreparedStatement = mock(PreparedStatement.class);
-    when(testPreparedStatement.executeQuery()).thenReturn(testResultSet);
-
-    Connection testConnection = mock(Connection.class);
-
-    ConnectionGenerator testConnectionGenerator = mock(ConnectionGenerator.class);
-    when(testConnectionGenerator.generateConnection()).thenReturn(testConnection);
-    when(testConnection.prepareStatement(
-            "Select * from [OIT_Lighthouse].[synthea].[ee_summaries] where ICN = ?"))
-        .thenReturn(testPreparedStatement);
-
-    EeResponseRepository testRepository = new EeResponseRepository(testConnectionGenerator);
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(testRepository);
+    when(testEndpoint.entityManager.find(EeResponseEntity.class, "1000003"))
+        .thenReturn(
+            EeResponseEntity.builder().icn("1000003").payload(expectedEeSummaryResponse).build());
 
     GetEESummaryRequest xmlRequest = GetEESummaryRequest.builder().key("1000003").build();
 
@@ -78,26 +64,15 @@ public class EeSummaryEndpointTest {
   }
 
   @Test
-  @SneakyThrows
   public void noEntriesAreFound() {
-    ResultSet testResultSet = mock(ResultSet.class);
-    when(testResultSet.getString("payload")).thenReturn("");
 
-    ConnectionGenerator testConnectionGenerator = mock(ConnectionGenerator.class);
+    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(null);
+    testEndpoint.entityManager = mock(EntityManager.class);
 
-    Connection testConnection = mock(Connection.class);
-    when(testConnectionGenerator.generateConnection()).thenReturn(testConnection);
+    when(testEndpoint.entityManager.find(EeResponseEntity.class, "invalid-icn"))
+        .thenReturn(EeResponseEntity.builder().icn("invalid-icn").payload("").build());
 
-    PreparedStatement testPreparedStatement = mock(PreparedStatement.class);
-    when(testPreparedStatement.executeQuery()).thenReturn(testResultSet);
-    when(testConnection.prepareStatement(
-            "Select * from [OIT_Lighthouse].[synthea].[ee_summaries] where ICN = ?"))
-        .thenReturn(testPreparedStatement);
-
-    EeResponseRepository testRepository = new EeResponseRepository(testConnectionGenerator);
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(testRepository);
-
-    GetEESummaryRequest xmlRequest = GetEESummaryRequest.builder().key("1000003").build();
+    GetEESummaryRequest xmlRequest = GetEESummaryRequest.builder().key("invalid-icn").build();
 
     ObjectFactory objectFactory = new ObjectFactory();
 

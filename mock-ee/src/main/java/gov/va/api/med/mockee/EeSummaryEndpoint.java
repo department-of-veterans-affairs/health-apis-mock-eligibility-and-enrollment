@@ -5,6 +5,7 @@ import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import gov.va.med.esr.webservices.jaxws.schemas.ObjectFactory;
 import java.io.StringReader;
 import java.sql.SQLException;
+import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.transform.stream.StreamSource;
@@ -22,7 +23,7 @@ public class EeSummaryEndpoint {
 
   private static final String NAMESPACE_URI = "http://jaxws.webservices.esr.med.va.gov/schemas";
 
-  private EeResponseRepository repository;
+  EntityManager entityManager;
 
   /**
    * Get EE Summary Response.
@@ -35,7 +36,7 @@ public class EeSummaryEndpoint {
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
-    String payload = repository.findEeResponse(icn);
+    String payload = entityManager.find(EeResponseEntity.class, icn).payload();
 
     if (payload.isEmpty()) {
       return new ObjectFactory().createGetEESummaryResponse(new GetEESummaryResponse());
