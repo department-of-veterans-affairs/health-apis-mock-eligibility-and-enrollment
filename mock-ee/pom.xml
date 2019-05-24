@@ -182,6 +182,62 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>${docker-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>build-test</id>
+                <configuration>
+                  <images>
+                    <image>
+                      <name>${docker.organization}/mock-ee-tests</name>
+                      <build>
+                        <dockerFile>Dockerfile</dockerFile>
+                        <tags>
+                          <tag>${project.version}</tag>
+                          <tag>${docker.tag}</tag>
+                        </tags>
+                      </build>
+                    </image>
+                  </images>
+                </configuration>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>deploy-test</id>
+                <configuration>
+                  <images>
+                    <image>
+                      <name>${docker.organization}/mock-ee-tests</name>
+                      <build>
+                        <dockerFile>Dockerfile</dockerFile>
+                        <tags>
+                          <tag>${project.version}</tag>
+                          <tag>${docker.tag}</tag>
+                        </tags>
+                      </build>
+                    </image>
+                  </images>
+                </configuration>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>push</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   <distributionManagement>
     <repository>
