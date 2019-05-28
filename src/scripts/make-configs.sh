@@ -105,5 +105,7 @@ configValue mock-ee $PROFILE ee.db-host "$DB_HOST"
 configValue mock-ee $PROFILE ee.db-port "$DB_PORT"
 configValue mock-ee $PROFILE ee.db-password "$DB_PASSWORD"
 configValue mock-ee $PROFILE ee.db-user "$DB_USER"
+configValue mock-ee $PROFILE ee.header.password "MockEEPassword"
+configValue mock-ee $PROFILE ee.header.username "MockEEUsername"
 
 checkForUnsetValues mock-ee $PROFILE

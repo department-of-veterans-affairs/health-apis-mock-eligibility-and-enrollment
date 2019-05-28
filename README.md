@@ -38,4 +38,6 @@ ee.db-port=123
 ee.db-password=password
 ee.db-user=username
 ee.database=Awesome_Database
+ee.header.password=MockEEPassword
+ee.header.username=MockEEUsername
 ```
