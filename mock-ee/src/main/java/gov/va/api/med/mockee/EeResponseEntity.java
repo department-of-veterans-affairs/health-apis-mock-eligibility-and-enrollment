@@ -3,6 +3,7 @@ package gov.va.api.med.mockee;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "synthea.ee_summaries")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EeResponseEntity {
 
   @EqualsAndHashCode.Include @Id private String icn;

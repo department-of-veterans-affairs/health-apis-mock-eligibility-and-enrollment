@@ -3,7 +3,6 @@ package gov.va.api.med.mockee;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import java.io.StringReader;
-import java.sql.SQLException;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -24,11 +23,7 @@ public class EeSummaryEndpoint {
 
   private EntityManager entityManager;
 
-  /**
-   * Get EE Summary Response.
-   *
-   * @throws SQLException when there's an issue accessing the database
-   */
+  /** Get EE Summary Response. */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getEESummaryRequest")
   @ResponsePayload
   @SneakyThrows
@@ -36,15 +31,13 @@ public class EeSummaryEndpoint {
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
 
-    String payload = "";
-
     EeResponseEntity responseEntity = entityManager.find(EeResponseEntity.class, icn);
 
     if (responseEntity == null) {
-      throw new Exceptions.UnknownPatientIcnException(icn, new RuntimeException());
+      throw new Exceptions.UnknownPatientIcnException(icn);
     }
 
-    payload = responseEntity.payload();
+    String payload = responseEntity.payload();
 
     return JAXBContext.newInstance(GetEESummaryResponse.class)
         .createUnmarshaller()
