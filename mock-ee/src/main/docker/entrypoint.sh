@@ -2,6 +2,9 @@
 
 ENDPOINT_DOMAIN_NAME="$K8S_LOAD_BALANCER"
 ENVIRONMENT="$K8S_ENVIRONMENT"
+MOCK_USERNAME="$USERNAME"
+MOCK_PASSWORD="$PASSWORD"
+ICN="$ICN"
 
 #Put Health endpoints here if you got them, all that's here is a WAG
 PATHS=(/acuator/info)
@@ -14,13 +17,16 @@ FAILURE=0
 usage() {
 cat <<EOF
 Commands
-  smoke-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>]
+  smoke-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>] [--username|-u <mock_username>] [--password|-p <mock_password>] [--icn|-i <patient_icn>]
   regression-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>]
 
 Example
   smoke-test
     --endpoint-domain-name=localhost
     --environment=qa
+    --username=fake_user
+    --password=123v3rys4fe
+    --icn=8774431
 
 $1
 EOF
@@ -58,14 +64,14 @@ httpListenerTests () {
     <SOAP-ENV:Header>
         <wsse:Security SOAP-ENV:mustUnderstand="1">
             <wsse:UsernameToken wsu:Id="XWSSGID-1281117217796-43574433">
-                <wsse:Username>MockEEUsername</wsse:Username>
-                <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">MockEEPassword</wsse:Password>
+                <wsse:Username>'$MOCK_USERNAME'</wsse:Username>
+                <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">'$MOCK_PASSWORD'</wsse:Password>
             </wsse:UsernameToken>
         </wsse:Security>
     </SOAP-ENV:Header>
     <SOAP-ENV:Body>
         <sch:getEESummaryRequest>
-            <sch:key>1017283148V813263</sch:key>
+            <sch:key>'$ICN'</sch:key>
             <sch:requestName>CommunityCareInfo</sch:requestName>
         </sch:getEESummaryRequest>
     </SOAP-ENV:Body>
@@ -97,8 +103,8 @@ regressionTest () {
 
 # Let's get down to business
 ARGS=$(getopt -n $(basename ${0}) \
-    -l "endpoint-domain-name:,environment:,help" \
-    -o "d:e:h" -- "$@")
+    -l "endpoint-domain-name:,environment:,password:,username:,icn:,help" \
+    -o "d:e:p:u:i:h" -- "$@")
 [ $? != 0 ] && usage
 eval set -- "$ARGS"
 while true
@@ -106,6 +112,9 @@ do
   case "$1" in
     -d|--endpoint-domain-name) ENDPOINT_DOMAIN_NAME=$2;;
     -e|--environment) ENVIRONMENT=$2;;
+    -p|--password) MOCK_PASSWORD=$2;;
+    -u|--username) MOCK_USERNAME=$2;;
+    -i|--icn) ICN=$2;;
     -h|--help) usage "I need a hero! I'm holding out for a hero...";;
     --) shift;break;;
   esac
@@ -118,6 +127,18 @@ fi
 
 if [[ -z "$ENVIRONMENT" || -e "$ENVIRONMENT" ]]; then
   usage "Missing variable K8S_ENVIRONMENT or option --environment|-e."
+fi
+
+if [[ -z "$MOCK_PASSWORD" || -e "$MOCK_PASSWORD" ]]; then
+  usage "Missing variable PASSWORD or option --password|-p."
+fi
+
+if [[ -z "$MOCK_USERNAME" || -e "$MOCK_USERNAME" ]]; then
+  usage "Missing variable USERNAME or option --username|-u."
+fi
+
+if [[ -z "$ICN" || -e "$ICN" ]]; then
+  usage "Missing variable ICN or option --icn|-i."
 fi
 
 [ $# == 0 ] && usage "No command specified"
