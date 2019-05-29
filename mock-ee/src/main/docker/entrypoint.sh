@@ -7,7 +7,7 @@ MOCK_PASSWORD="$PASSWORD"
 ICN="$ICN"
 
 #Put Health endpoints here if you got them, all that's here is a WAG
-PATHS=(/acuator/health)
+PATHS=(/actuator/health)
 
 SUCCESS=0
 
