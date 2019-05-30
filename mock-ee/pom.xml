@@ -8,7 +8,7 @@
   </parent>
   <groupId>gov.va.api.med.mockee</groupId>
   <artifactId>health-apis-mock-ee</artifactId>
-  <version>1.0.10-SNAPSHOT</version>
+  <version>1.0.10</version>
   <name>health-apis-mock-ee</name>
   <properties>
     <ee-artifacts.version>1.1.39</ee-artifacts.version>
