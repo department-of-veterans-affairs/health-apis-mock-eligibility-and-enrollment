@@ -75,19 +75,21 @@ public class SteelThreadSystemCheck implements HealthIndicator {
   )
   @SneakyThrows
   public void runSteelThreadCheckAsynchronously() {
-    if (!"skip".equals(icn)) {
-      log.info("Performing health check.");
-      try {
-        endpoint.findEeResponseEntity(icn);
-        ledger.recordSuccess();
-      } catch (HttpServerErrorException | HttpClientErrorException | ResourceAccessException e) {
-        int consecutiveFailures = ledger.recordFailure();
-        log.error("Failed to complete health check. Failure count is " + consecutiveFailures);
-      } catch (Exception e) {
-        int consecutiveFailures = ledger.recordFailure();
-        log.error("Failed to complete health check. Failure count is " + consecutiveFailures, e);
-        throw e;
-      }
+    if ("skip".equals(icn)) {
+      return;
+    }
+
+    log.info("Performing health check.");
+    try {
+      endpoint.findEeResponseEntity(icn);
+      ledger.recordSuccess();
+    } catch (HttpServerErrorException | HttpClientErrorException | ResourceAccessException e) {
+      int consecutiveFailures = ledger.recordFailure();
+      log.error("Failed to complete health check. Failure count is " + consecutiveFailures);
+    } catch (Exception e) {
+      int consecutiveFailures = ledger.recordFailure();
+      log.error("Failed to complete health check. Failure count is " + consecutiveFailures, e);
+      throw e;
     }
   }
 }
