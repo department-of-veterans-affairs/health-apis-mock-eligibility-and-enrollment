@@ -11,15 +11,26 @@ import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import gov.va.med.esr.webservices.jaxws.schemas.ObjectFactory;
 import gov.va.med.esr.webservices.jaxws.schemas.VceEligibilityCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.VceEligibilityInfo;
-import java.util.ArrayList;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import lombok.SneakyThrows;
 import org.junit.Test;
 
 public class EeSummaryEndpointTest {
+
+  @SneakyThrows
+  private static XMLGregorianCalendar parseXmlGregorianCalendar(String timestamp) {
+    GregorianCalendar gCal = new GregorianCalendar();
+    gCal.setTime(Date.from(Instant.parse(timestamp)));
+    return DatatypeFactory.newInstance().newXMLGregorianCalendar(gCal);
+  }
 
   @Test
   public void correctSummaryResponse() throws DatatypeConfigurationException {
@@ -31,13 +42,13 @@ public class EeSummaryEndpointTest {
             + "                    <eligibilities>\\n"
             + "                        <eligibility>\\n"
             + "                            <vceDescription>Ineligible</vceDescription>\\n"
-            + "                             <vceEffectiveDate>1946-08-23T16:01:01.745-04:00</vceEffectiveDate>\\n"
+            + "                             <vceEffectiveDate>1946-08-23T16:01:01.00Z</vceEffectiveDate>\\n"
             + "                            <vceCode>X</vceCode>\\n"
             + "                        </eligibility>\\n"
             + "                    </eligibilities>\\n"
             + "                </communityCareEligibilityInfo>\\n"
             + "            </summary>\\n"
-            + "            <invocationDate>2019-05-01T07:56:02</invocationDate>\\n"
+            + "            <invocationDate>2019-05-01T07:56:02.00Z</invocationDate>\\n"
             + "        </getEESummaryResponse>";
 
     EntityManager entityManager = mock(EntityManager.class);
@@ -50,40 +61,25 @@ public class EeSummaryEndpointTest {
         new ObjectFactory()
             .createGetEESummaryRequest(GetEESummaryRequest.builder().key("1000003").build());
 
-    XMLGregorianCalendar vceEffectiveDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-    vceEffectiveDate.setTime(16, 1, 1, 745);
-    vceEffectiveDate.setYear(1946);
-    vceEffectiveDate.setMonth(8);
-    vceEffectiveDate.setDay(23);
-    vceEffectiveDate.setTimezone(-240);
-
-    VceEligibilityInfo expectedEligibilityInfo =
-        VceEligibilityInfo.builder()
-            .vceCode("X")
-            .vceDescription("Ineligible")
-            .vceEffectiveDate(vceEffectiveDate)
-            .build();
-
-    ArrayList<VceEligibilityInfo> eligibilityList = new ArrayList<VceEligibilityInfo>();
-    eligibilityList.add(expectedEligibilityInfo);
-
-    XMLGregorianCalendar invocationDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-    invocationDate.setTime(7, 56, 02);
-    invocationDate.setYear(2019);
-    invocationDate.setMonth(5);
-    invocationDate.setDay(1);
-
     GetEESummaryResponse expected =
         GetEESummaryResponse.builder()
             .eesVersion("5.6.0.01001")
-            .invocationDate(invocationDate)
+            .invocationDate(parseXmlGregorianCalendar("2019-05-01T07:56:02.00Z"))
             .summary(
                 EeSummary.builder()
                     .communityCareEligibilityInfo(
                         CommunityCareEligibilityInfo.builder()
                             .eligibilities(
                                 VceEligibilityCollection.builder()
-                                    .eligibility(eligibilityList)
+                                    .eligibility(
+                                        Collections.singletonList(
+                                            VceEligibilityInfo.builder()
+                                                .vceCode("X")
+                                                .vceDescription("Ineligible")
+                                                .vceEffectiveDate(
+                                                    parseXmlGregorianCalendar(
+                                                        "1946-08-23T16:01:01.00Z"))
+                                                .build()))
                                     .build())
                             .build())
                     .build())

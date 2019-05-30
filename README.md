@@ -33,7 +33,7 @@ Mock data is stored in a test environment database.
 These application properties must be configured:
 
 ```
-spring.datasource.url=dbUrl
+spring.datasource.url=sqlserver://foo.gov:port;database=databaseName;user=dbUsername;password=dbPassword;
 spring.datasource.username=dbUsername
 spring.datasource.password=dbPassword
 ```
