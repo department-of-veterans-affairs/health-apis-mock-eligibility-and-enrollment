@@ -5,19 +5,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.va.api.med.mockee.EeResponseRepository;
+import gov.va.api.med.mockee.EeResponseEntity;
+import gov.va.api.med.mockee.EeSummaryEndpoint;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.actuate.health.Status;
+import org.springframework.web.client.ResourceAccessException;
 
 public class SteelThreadHealthCheckTest {
 
   private final int failureThresholdForTests = 5;
 
-  @Mock EeResponseRepository repository;
+  @Mock EeSummaryEndpoint endpoint;
 
   @Mock SteelThreadSystemCheckLedger ledger;
 
@@ -29,7 +31,7 @@ public class SteelThreadHealthCheckTest {
   @Test
   public void healthCheckHappyPath() {
     SteelThreadSystemCheck test =
-        new SteelThreadSystemCheck(repository, ledger, "123", failureThresholdForTests);
+        new SteelThreadSystemCheck(endpoint, ledger, "123", failureThresholdForTests);
     // We'll return exactly the threshold to check the boundary case.
     when(ledger.getConsecutiveFailureCount()).thenReturn(failureThresholdForTests - 1);
     assertThat(test.health().getStatus()).isEqualTo(Status.UP);
@@ -38,7 +40,7 @@ public class SteelThreadHealthCheckTest {
   @Test
   public void healthCheckSadPathWhenFailureThresholdExceeded() {
     SteelThreadSystemCheck test =
-        new SteelThreadSystemCheck(repository, ledger, "123", failureThresholdForTests);
+        new SteelThreadSystemCheck(endpoint, ledger, "123", failureThresholdForTests);
     when(ledger.getConsecutiveFailureCount()).thenReturn(failureThresholdForTests);
     assertThat(test.health().getStatus()).isEqualTo(Status.DOWN);
   }
@@ -46,7 +48,7 @@ public class SteelThreadHealthCheckTest {
   @Test
   public void healthCheckSkip() {
     SteelThreadSystemCheck test =
-        new SteelThreadSystemCheck(repository, ledger, "skip", failureThresholdForTests);
+        new SteelThreadSystemCheck(endpoint, ledger, "skip", failureThresholdForTests);
     // Exceed threshold to make sure we're actually skipping.
     when(ledger.getConsecutiveFailureCount()).thenReturn(failureThresholdForTests + 100);
     assertThat(test.health().getStatus()).isEqualTo(Status.UP);
@@ -54,13 +56,13 @@ public class SteelThreadHealthCheckTest {
 
   /** Make sure that when the search fails, the failure event is getting kicked in ledger. */
   @Test
-  public void runSteelThreadExceptionPath() {
+  public void runSteelThreadGenericExceptionPath() {
     SteelThreadSystemCheck test =
-        new SteelThreadSystemCheck(repository, ledger, "123", failureThresholdForTests);
+        new SteelThreadSystemCheck(endpoint, ledger, "123", failureThresholdForTests);
     // Just need to thrown any unchecked exception to make sure that we hit the failure reporting.
-    when(repository.findEeResponse(Mockito.any())).thenThrow(new IllegalArgumentException("foo"));
+    when(endpoint.findEeResponseEntity(Mockito.any()))
+        .thenThrow(new IllegalArgumentException("foo"));
     when(ledger.recordFailure()).thenReturn(failureThresholdForTests);
-
     try {
       test.runSteelThreadCheckAsynchronously();
     } catch (Exception e) {
@@ -72,7 +74,6 @@ public class SteelThreadHealthCheckTest {
   /** Make sure that when the search succeeds, the happy event is getting kicked in ledger. */
   @Test
   public void runSteelThreadHappyPath() {
-
     String expectedEeSummaryResponse =
         "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\n"
             + "            <eesVersion>5.6.0.01001</eesVersion>\\n"
@@ -89,11 +90,26 @@ public class SteelThreadHealthCheckTest {
             + "            </summary>\\n"
             + "            <invocationDate>2019-05-01T07:56:02</invocationDate>\\n"
             + "        </getEESummaryResponse>";
-
     SteelThreadSystemCheck test =
-        new SteelThreadSystemCheck(repository, ledger, "123", failureThresholdForTests);
-    when(repository.findEeResponse(Mockito.any())).thenReturn(expectedEeSummaryResponse);
+        new SteelThreadSystemCheck(endpoint, ledger, "123", failureThresholdForTests);
+    when(endpoint.findEeResponseEntity(Mockito.any()))
+        .thenReturn(EeResponseEntity.builder().payload(expectedEeSummaryResponse).build());
     test.runSteelThreadCheckAsynchronously();
     verify(ledger, times(1)).recordSuccess();
+  }
+
+  @Test
+  public void runSteelThreadSpecificExceptionPath() {
+    SteelThreadSystemCheck test =
+        new SteelThreadSystemCheck(endpoint, ledger, "123", failureThresholdForTests);
+    when(endpoint.findEeResponseEntity(Mockito.any()))
+        .thenThrow(new ResourceAccessException("foo"));
+    when(ledger.recordFailure()).thenReturn(failureThresholdForTests);
+    try {
+      test.runSteelThreadCheckAsynchronously();
+    } catch (ResourceAccessException rae) {
+      // Do nothing. Want to make sure that the failure is recorded and we'll check that below.
+    }
+    verify(ledger, times(1)).recordFailure();
   }
 }
