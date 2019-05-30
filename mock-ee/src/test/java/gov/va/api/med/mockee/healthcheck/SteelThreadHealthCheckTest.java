@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -103,8 +102,8 @@ public class SteelThreadHealthCheckTest {
   public void runSteelThreadSkipPath() {
     SteelThreadSystemCheck test =
         new SteelThreadSystemCheck(endpoint, ledger, "skip", failureThresholdForTests);
-    assertThat(test.runSteelThreadCheckAsynchronously())
-        .isEqualTo(Health.up().withDetail("skipped", true).build());
+    test.runSteelThreadCheckAsynchronously();
+    verify(endpoint, times(0)).findEeResponseEntity("skip");
   }
 
   @Test

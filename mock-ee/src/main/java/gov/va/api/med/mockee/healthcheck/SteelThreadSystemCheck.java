@@ -74,24 +74,20 @@ public class SteelThreadSystemCheck implements HealthIndicator {
     initialDelayString = "${health-check.frequency-ms}"
   )
   @SneakyThrows
-  public Health runSteelThreadCheckAsynchronously() {
-
-    if ("skip".equals(icn)) {
-      return Health.up().withDetail("skipped", true).build();
+  public void runSteelThreadCheckAsynchronously() {
+    if (!"skip".equals(icn)) {
+      log.info("Performing health check.");
+      try {
+        endpoint.findEeResponseEntity(icn);
+        ledger.recordSuccess();
+      } catch (HttpServerErrorException | HttpClientErrorException | ResourceAccessException e) {
+        int consecutiveFailures = ledger.recordFailure();
+        log.error("Failed to complete health check. Failure count is " + consecutiveFailures);
+      } catch (Exception e) {
+        int consecutiveFailures = ledger.recordFailure();
+        log.error("Failed to complete health check. Failure count is " + consecutiveFailures, e);
+        throw e;
+      }
     }
-
-    log.info("Performing health check.");
-    try {
-      endpoint.findEeResponseEntity(icn);
-      ledger.recordSuccess();
-    } catch (HttpServerErrorException | HttpClientErrorException | ResourceAccessException e) {
-      int consecutiveFailures = ledger.recordFailure();
-      log.error("Failed to complete health check. Failure count is " + consecutiveFailures);
-    } catch (Exception e) {
-      int consecutiveFailures = ledger.recordFailure();
-      log.error("Failed to complete health check. Failure count is " + consecutiveFailures, e);
-      throw e;
-    }
-    return Health.up().build();
   }
 }
