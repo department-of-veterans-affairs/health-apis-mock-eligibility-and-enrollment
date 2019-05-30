@@ -74,7 +74,12 @@ public class SteelThreadSystemCheck implements HealthIndicator {
     initialDelayString = "${health-check.frequency-ms}"
   )
   @SneakyThrows
-  public void runSteelThreadCheckAsynchronously() {
+  public Health runSteelThreadCheckAsynchronously() {
+
+    if ("skip".equals(icn)) {
+      return Health.up().withDetail("skipped", true).build();
+    }
+
     log.info("Performing health check.");
     try {
       endpoint.findEeResponseEntity(icn);
@@ -87,5 +92,6 @@ public class SteelThreadSystemCheck implements HealthIndicator {
       log.error("Failed to complete health check. Failure count is " + consecutiveFailures, e);
       throw e;
     }
+    return Health.up().build();
   }
 }
