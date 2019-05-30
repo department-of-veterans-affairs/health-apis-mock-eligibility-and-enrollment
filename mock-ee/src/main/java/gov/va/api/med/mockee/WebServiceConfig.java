@@ -2,6 +2,7 @@ package gov.va.api.med.mockee;
 
 import java.util.List;
 import java.util.Properties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,11 @@ import org.springframework.xml.xsd.XsdSchema;
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
+  @Value("${ee.header.username}")
+  private String eeHeaderUsername;
+
+  @Value("${ee.header.password}")
+  private String eeHeaderPassword;
 
   @Override
   public void addInterceptors(List<EndpointInterceptor> interceptors) {
@@ -59,7 +65,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     SimplePasswordValidationCallbackHandler callbackHandler =
         new SimplePasswordValidationCallbackHandler();
     Properties users = new Properties();
-    users.setProperty("MockEEUsername", "MockEEPassword");
+    users.setProperty(eeHeaderUsername, eeHeaderPassword);
     callbackHandler.setUsers(users);
     return callbackHandler;
   }

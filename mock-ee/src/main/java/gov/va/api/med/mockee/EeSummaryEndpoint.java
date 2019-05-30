@@ -23,6 +23,15 @@ public class EeSummaryEndpoint {
 
   private EntityManager entityManager;
 
+  /** Find the EeResponseEntity mapped to the icn.* */
+  public EeResponseEntity findEeResponseEntity(String icn) {
+    EeResponseEntity entity = entityManager.find(EeResponseEntity.class, icn);
+    if (entity == null) {
+      throw new Exceptions.UnknownPatientIcnException(icn);
+    }
+    return entity;
+  }
+
   /** Get EE Summary Response. */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getEESummaryRequest")
   @ResponsePayload
@@ -30,15 +39,8 @@ public class EeSummaryEndpoint {
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
-
-    EeResponseEntity responseEntity = entityManager.find(EeResponseEntity.class, icn);
-
-    if (responseEntity == null) {
-      throw new Exceptions.UnknownPatientIcnException(icn);
-    }
-
+    EeResponseEntity responseEntity = findEeResponseEntity(icn);
     String payload = responseEntity.payload();
-
     return JAXBContext.newInstance(GetEESummaryResponse.class)
         .createUnmarshaller()
         .unmarshal(new StreamSource(new StringReader(payload)), GetEESummaryResponse.class);

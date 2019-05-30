@@ -4,18 +4,17 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
-    <version>2.0.4</version>
+    <version>2.0.5</version>
   </parent>
   <groupId>gov.va.api.med.mockee</groupId>
   <artifactId>health-apis-mock-ee</artifactId>
-  <version>1.0.7-SNAPSHOT</version>
+  <version>1.0.9-SNAPSHOT</version>
   <name>health-apis-mock-ee</name>
   <properties>
-    <ee-artifacts.version>1.1.37</ee-artifacts.version>
-    <h2-database.version>1.4.199</h2-database.version>
+    <ee-artifacts.version>1.1.39</ee-artifacts.version>
     <java.version>1.8</java.version>
     <build-info-maven-plugin.version>1.2</build-info-maven-plugin.version>
-    <jacoco.coverage>0.94</jacoco.coverage>
+    <jacoco.coverage>0.95</jacoco.coverage>
     <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
     <docker.organization>vasdvp</docker.organization>
     <docker.baseImage>vasdvp/health-apis-application-base</docker.baseImage>
@@ -79,6 +78,10 @@
       <groupId>gov.va.api.health</groupId>
       <artifactId>ee-artifacts</artifactId>
       <version>1.1.36</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
   </dependencies>
   <build>
@@ -184,6 +187,62 @@
                 <phase>deploy</phase>
                 <goals>
                   <goal>build</goal>
+                  <goal>push</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>${docker-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>build-test</id>
+                <configuration>
+                  <images>
+                    <image>
+                      <name>${docker.organization}/mock-ee-tests</name>
+                      <build>
+                        <dockerFile>Dockerfile</dockerFile>
+                        <tags>
+                          <tag>${project.version}</tag>
+                          <tag>${docker.tag}</tag>
+                        </tags>
+                      </build>
+                    </image>
+                  </images>
+                </configuration>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>deploy-test</id>
+                <configuration>
+                  <images>
+                    <image>
+                      <name>${docker.organization}/mock-ee-tests</name>
+                      <build>
+                        <dockerFile>Dockerfile</dockerFile>
+                        <tags>
+                          <tag>${project.version}</tag>
+                          <tag>${docker.tag}</tag>
+                        </tags>
+                      </build>
+                    </image>
+                  </images>
+                </configuration>
+                <phase>deploy</phase>
+                <goals>
                   <goal>push</goal>
                 </goals>
               </execution>

@@ -36,4 +36,6 @@ These application properties must be configured:
 spring.datasource.url=sqlserver://foo.gov:port;database=databaseName;user=dbUsername;password=dbPassword;
 spring.datasource.username=dbUsername
 spring.datasource.password=dbPassword
+ee.header.password=MockEEPassword
+ee.header.username=MockEEUsername
 ```

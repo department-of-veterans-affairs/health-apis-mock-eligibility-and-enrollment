@@ -102,5 +102,7 @@ makeConfig mock-ee $PROFILE
 configValue mock-ee $PROFILE spring.datasource.url "$DB_URL"
 configValue mock-ee $PROFILE spring.datasource.password "$DB_PASSWORD"
 configValue mock-ee $PROFILE spring.datasource.username "$DB_USER"
+configValue mock-ee $PROFILE ee.header.password "MockEEPassword"
+configValue mock-ee $PROFILE ee.header.username "MockEEUsername"
 
 checkForUnsetValues mock-ee $PROFILE
