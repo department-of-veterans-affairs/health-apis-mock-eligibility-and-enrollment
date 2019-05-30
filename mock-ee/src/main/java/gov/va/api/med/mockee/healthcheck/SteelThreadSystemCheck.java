@@ -1,6 +1,6 @@
 package gov.va.api.med.mockee.healthcheck;
 
-import gov.va.api.med.mockee.EeResponseRepository;
+import gov.va.api.med.mockee.EeSummaryEndpoint;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.web.client.ResourceAccessException;
 @Slf4j
 public class SteelThreadSystemCheck implements HealthIndicator {
 
-  private final EeResponseRepository repository;
+  private final EeSummaryEndpoint endpoint;
 
   private final SteelThreadSystemCheckLedger ledger;
 
@@ -32,11 +32,11 @@ public class SteelThreadSystemCheck implements HealthIndicator {
    *     failures.
    */
   public SteelThreadSystemCheck(
-      @Autowired EeResponseRepository repository,
+      @Autowired EeSummaryEndpoint endpoint,
       @Autowired SteelThreadSystemCheckLedger ledger,
       @Value("${health-check.test-icn}") String icn,
       @Value("${health-check.consecutive-failure-threshold}") int consecutiveFailureThreshold) {
-    this.repository = repository;
+    this.endpoint = endpoint;
     this.ledger = ledger;
     this.icn = icn;
     this.consecutiveFailureThreshold = consecutiveFailureThreshold;
@@ -77,7 +77,7 @@ public class SteelThreadSystemCheck implements HealthIndicator {
   public void runSteelThreadCheckAsynchronously() {
     log.info("Performing health check.");
     try {
-      repository.findEeResponse(icn);
+      endpoint.findEeResponseEntity(icn);
       ledger.recordSuccess();
     } catch (HttpServerErrorException | HttpClientErrorException | ResourceAccessException e) {
       int consecutiveFailures = ledger.recordFailure();

@@ -14,8 +14,7 @@ Options
 
 Secrets Configuration
  This bash file is sourced and expected to set the following variables
- -  DB_HOST
- -  DB_PORT
+ -  DB_URL
  -  DB_PASSWORD
  -  DB_USER
 
@@ -49,8 +48,7 @@ echo "Loading secrets: $SECRETS"
 . $SECRETS
 
 MISSING_SECRETS=false
-[ -z "$DB_HOST" ] && echo "Missing configuration: DB_HOST" && MISSING_SECRETS=true
-[ -z "$DB_PORT" ] && echo "Missing configuration: DB_PORT" && MISSING_SECRETS=true
+[ -z "$DB_URL" ] && echo "Missing configuration: DB_URL" && MISSING_SECRETS=true
 [ -z "$DB_PASSWORD" ] && echo "Missing configuration: DB_PASSWORD" && MISSING_SECRETS=true
 [ -z "$DB_USER" ] && echo "Missing configuration: DB_USER" && MISSING_SECRETS=true
 [ $MISSING_SECRETS == true ] && usage "Missing configuration secrets, please update $SECRETS"
@@ -101,10 +99,9 @@ sendMoarSpams() {
 }
 
 makeConfig mock-ee $PROFILE
-configValue mock-ee $PROFILE ee.db-host "$DB_HOST"
-configValue mock-ee $PROFILE ee.db-port "$DB_PORT"
-configValue mock-ee $PROFILE ee.db-password "$DB_PASSWORD"
-configValue mock-ee $PROFILE ee.db-user "$DB_USER"
+configValue mock-ee $PROFILE spring.datasource.url "$DB_URL"
+configValue mock-ee $PROFILE spring.datasource.password "$DB_PASSWORD"
+configValue mock-ee $PROFILE spring.datasource.username "$DB_USER"
 configValue mock-ee $PROFILE ee.header.password "MockEEPassword"
 configValue mock-ee $PROFILE ee.header.username "MockEEUsername"
 

@@ -2,9 +2,8 @@ package gov.va.api.med.mockee;
 
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
-import gov.va.med.esr.webservices.jaxws.schemas.ObjectFactory;
 import java.io.StringReader;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.transform.stream.StreamSource;
@@ -22,25 +21,26 @@ public class EeSummaryEndpoint {
 
   private static final String NAMESPACE_URI = "http://jaxws.webservices.esr.med.va.gov/schemas";
 
-  private EeResponseRepository repository;
+  private EntityManager entityManager;
 
-  /**
-   * Get EE Summary Response.
-   *
-   * @throws SQLException when there's an issue accessing the database
-   */
+  /** Find the EeResponseEntity mapped to the icn.* */
+  public EeResponseEntity findEeResponseEntity(String icn) {
+    EeResponseEntity entity = entityManager.find(EeResponseEntity.class, icn);
+    if (entity == null) {
+      throw new Exceptions.UnknownPatientIcnException(icn);
+    }
+    return entity;
+  }
+
+  /** Get EE Summary Response. */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getEESummaryRequest")
   @ResponsePayload
   @SneakyThrows
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
-    String payload = repository.findEeResponse(icn);
-
-    if (payload.isEmpty()) {
-      return new ObjectFactory().createGetEESummaryResponse(new GetEESummaryResponse());
-    }
-
+    EeResponseEntity responseEntity = findEeResponseEntity(icn);
+    String payload = responseEntity.payload();
     return JAXBContext.newInstance(GetEESummaryResponse.class)
         .createUnmarshaller()
         .unmarshal(new StreamSource(new StringReader(payload)), GetEESummaryResponse.class);

@@ -33,11 +33,9 @@ Mock data is stored in a test environment database.
 These application properties must be configured:
 
 ```
-ee.db-host=blah.lab.gov
-ee.db-port=123
-ee.db-password=password
-ee.db-user=username
-ee.database=Awesome_Database
+spring.datasource.url=sqlserver://foo.gov:port;database=databaseName;user=dbUsername;password=dbPassword;
+spring.datasource.username=dbUsername
+spring.datasource.password=dbPassword
 ee.header.password=MockEEPassword
 ee.header.username=MockEEUsername
 ```
