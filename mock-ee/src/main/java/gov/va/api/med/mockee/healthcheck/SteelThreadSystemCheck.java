@@ -75,6 +75,10 @@ public class SteelThreadSystemCheck implements HealthIndicator {
   )
   @SneakyThrows
   public void runSteelThreadCheckAsynchronously() {
+    if ("skip".equals(icn)) {
+      return;
+    }
+
     log.info("Performing health check.");
     try {
       endpoint.findEeResponseEntity(icn);

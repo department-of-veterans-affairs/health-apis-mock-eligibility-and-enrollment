@@ -99,6 +99,14 @@ public class SteelThreadHealthCheckTest {
   }
 
   @Test
+  public void runSteelThreadSkipPath() {
+    SteelThreadSystemCheck test =
+        new SteelThreadSystemCheck(endpoint, ledger, "skip", failureThresholdForTests);
+    test.runSteelThreadCheckAsynchronously();
+    verify(endpoint, times(0)).findEeResponseEntity("skip");
+  }
+
+  @Test
   public void runSteelThreadSpecificExceptionPath() {
     SteelThreadSystemCheck test =
         new SteelThreadSystemCheck(endpoint, ledger, "123", failureThresholdForTests);
