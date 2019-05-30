@@ -2,12 +2,13 @@
 
 ENDPOINT_DOMAIN_NAME="$K8S_LOAD_BALANCER"
 ENVIRONMENT="$K8S_ENVIRONMENT"
+BASE_URL="$BASE_URL"
 MOCK_USERNAME="$USERNAME"
 MOCK_PASSWORD="$PASSWORD"
 ICN="$ICN"
 
 #Put Health endpoints here if you got them, all that's here is a WAG
-PATHS=(/mock-ee/v0/actuator/health)
+PATHS=("$BASE_URL/actuator/health")
 
 SUCCESS=0
 
@@ -17,13 +18,14 @@ FAILURE=0
 usage() {
 cat <<EOF
 Commands
-  smoke-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>] [--username|-u <mock_username>] [--password|-p <mock_password>] [--icn|-i <patient_icn>]
-  regression-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>]
+  smoke-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>] [--base-url|-b <base_url>] [--username|-u <mock_username>] [--password|-p <mock_password>] [--icn|-i <patient_icn>]
+  regression-test [--endpoint-domain-name|-d <endpoint>] [--environment|-e <env>] [--base-url|-b <base_url>] [--username|-u <mock_username>] [--password|-p <mock_password>] [--icn|-i <patient_icn>]
 
 Example
   smoke-test
     --endpoint-domain-name=localhost
     --environment=qa
+    --base-url=/mock-ee/v0
     --username=fake_user
     --password=123v3rys4fe
     --icn=8774431
@@ -52,13 +54,13 @@ httpListenerTests () {
 
   for path in "${PATHS[@]}"
     do
-      request_url="$ENDPOINT_DOMAIN_NAME$path"
+      request_url="$ENDPOINT_DOMAIN_NAME$BASE_URL$path"
       status_code=$(curl -k --write-out %{http_code} --silent --output /dev/null "$request_url")
       trackStatus
     done
 
-  path=/mock-ee/v0/ws
-  request_url="$ENDPOINT_DOMAIN_NAME$path"
+  path="/ws"
+  request_url="$ENDPOINT_DOMAIN_NAME$BASE_URL$path"
   status_code=$(curl -X POST -k --write-out %{http_code} --silent --output /dev/null "$request_url" -H 'Content-Type: text/xml' -d '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://jaxws.webservices.esr.med.va.gov/schemas" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
     <SOAP-ENV:Header>
         <wsse:Security SOAP-ENV:mustUnderstand="1">
@@ -102,7 +104,7 @@ regressionTest () {
 
 # Let's get down to business
 ARGS=$(getopt -n $(basename ${0}) \
-    -l "endpoint-domain-name:,environment:,password:,username:,icn:,help" \
+    -l "endpoint-domain-name:,environment:,base-url:,password:,username:,icn:,help" \
     -o "d:e:p:u:i:h" -- "$@")
 [ $? != 0 ] && usage
 eval set -- "$ARGS"
@@ -111,6 +113,7 @@ do
   case "$1" in
     -d|--endpoint-domain-name) ENDPOINT_DOMAIN_NAME=$2;;
     -e|--environment) ENVIRONMENT=$2;;
+    -b|--base-url) BASE_URL=$2;;
     -p|--password) MOCK_PASSWORD=$2;;
     -u|--username) MOCK_USERNAME=$2;;
     -i|--icn) ICN=$2;;
