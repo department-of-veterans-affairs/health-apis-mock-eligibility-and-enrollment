@@ -74,22 +74,20 @@ public class SteelThreadHealthCheckTest {
   public void runSteelThreadHappyPath() {
 
     String expectedEeSummaryResponse =
-        "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\r\\n"
-            + "            <eesVersion>5.6.0.01001</eesVersion>\\r\\n"
-            + "            <summary>\\r\\n"
-            + "                <communityCareEligibilityInfo>\\r\\n"
-            + "                    <eligibilities>\\r\\n"
-            + "                        <eligibility>\\r\\n"
-            + "                            <vceDescription>Ineligible</vceDescription>\\r\\n"
-            + "                             <vceEffectiveDate>"
-            + "1946-08-23T16:01:01.745-04:00"
-            + "</vceEffectiveDate>\\r\\n"
-            + "                            <vceCode>X</vceCode>\\r\\n"
-            + "                        </eligibility>\\r \\r\\n"
-            + "                    </eligibilities>\\r\\n"
-            + "                </communityCareEligibilityInfo>\\r\\n"
-            + "            </summary>\\r\\n"
-            + "            <invocationDate>2019-05-01T07:56:02</invocationDate>\\r\\n"
+        "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\n"
+            + "            <eesVersion>5.6.0.01001</eesVersion>\\n"
+            + "            <summary>\\n"
+            + "                <communityCareEligibilityInfo>\\n"
+            + "                    <eligibilities>\\n"
+            + "                        <eligibility>\\n"
+            + "                            <vceDescription>Ineligible</vceDescription>\\n"
+            + "                             <vceEffectiveDate>1946-08-23T16:01:01.745-04:00</vceEffectiveDate>\\n"
+            + "                            <vceCode>X</vceCode>\\n"
+            + "                        </eligibility>\\n"
+            + "                    </eligibilities>\\n"
+            + "                </communityCareEligibilityInfo>\\n"
+            + "            </summary>\\n"
+            + "            <invocationDate>2019-05-01T07:56:02</invocationDate>\\n"
             + "        </getEESummaryResponse>";
 
     SteelThreadSystemCheck test =
