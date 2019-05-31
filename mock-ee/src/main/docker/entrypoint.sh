@@ -50,7 +50,7 @@ trackStatus () {
 # Send requests to all of mock-ee's available endpoints
 httpListenerTests () {
 
-  ENDPOINT_DOMAIN_NAME="http://$ENDPOINT_DOMAIN_NAME"
+  ENDPOINT_DOMAIN_NAME="https://$ENDPOINT_DOMAIN_NAME"
 
   for path in "${PATHS[@]}"
     do
