@@ -37,7 +37,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
   public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema eeSchema) {
     DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
     wsdl11Definition.setPortTypeName("SummaryPort");
-    wsdl11Definition.setLocationUri("/ws");
+    wsdl11Definition.setLocationUri("/v0/ws");
     wsdl11Definition.setTargetNamespace("http://jaxws.webservices.esr.med.va.gov/schemas");
     wsdl11Definition.setSchema(eeSchema);
     return wsdl11Definition;
@@ -56,7 +56,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     MessageDispatcherServlet servlet = new MessageDispatcherServlet();
     servlet.setApplicationContext(applicationContext);
     servlet.setTransformWsdlLocations(true);
-    return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, "/ws/*");
+    return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, "/v0/ws/*");
   }
 
   /** Validation for user/password. */
