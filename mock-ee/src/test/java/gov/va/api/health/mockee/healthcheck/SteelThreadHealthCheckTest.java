@@ -1,12 +1,12 @@
-package gov.va.api.med.mockee.healthcheck;
+package gov.va.api.health.mockee.healthcheck;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import gov.va.api.med.mockee.EeResponseEntity;
-import gov.va.api.med.mockee.EeSummaryEndpoint;
+import gov.va.api.health.mockee.EeResponseEntity;
+import gov.va.api.health.mockee.EeSummaryEndpoint;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

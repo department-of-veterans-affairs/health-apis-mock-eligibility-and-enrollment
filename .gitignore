@@ -31,6 +31,3 @@ secrets.conf
 
 ### VS Code ###
 .vscode/
-
-### Generated classes from wsdl or xsd ###
-/src/main/java/gov/va/med/esr/webservices/jaxws/schemas/
