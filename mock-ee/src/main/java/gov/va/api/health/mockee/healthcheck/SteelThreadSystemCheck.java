@@ -1,6 +1,6 @@
-package gov.va.api.med.mockee.healthcheck;
+package gov.va.api.health.mockee.healthcheck;
 
-import gov.va.api.med.mockee.EeSummaryEndpoint;
+import gov.va.api.health.mockee.EeSummaryEndpoint;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package gov.va.api.med.mockee.healthcheck;
+package gov.va.api.health.mockee.healthcheck;
 
 /**
  * Records successful and failure resource events from source (e.g. Mr. Anderson). A success event

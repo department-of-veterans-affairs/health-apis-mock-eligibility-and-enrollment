@@ -1,4 +1,4 @@
-package gov.va.api.med.mockee;
+package gov.va.api.health.mockee;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

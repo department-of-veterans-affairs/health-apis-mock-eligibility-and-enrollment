@@ -1,4 +1,4 @@
-package gov.va.api.med.mockee;
+package gov.va.api.health.mockee;
 
 import lombok.experimental.UtilityClass;
 

@@ -1,4 +1,4 @@
-package gov.va.api.med.mockee;
+package gov.va.api.health.mockee;
 
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;

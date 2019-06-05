@@ -1,4 +1,4 @@
-package gov.va.api.med.mockee.healthcheck;
+package gov.va.api.health.mockee.healthcheck;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

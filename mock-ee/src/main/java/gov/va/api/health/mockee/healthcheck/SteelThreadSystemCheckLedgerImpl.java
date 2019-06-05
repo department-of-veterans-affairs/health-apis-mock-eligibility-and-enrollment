@@ -1,4 +1,4 @@
-package gov.va.api.med.mockee.healthcheck;
+package gov.va.api.health.mockee.healthcheck;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Component;
