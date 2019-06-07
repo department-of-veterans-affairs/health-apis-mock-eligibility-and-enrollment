@@ -11,5 +11,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>mock-ee</module>
+    <module>mock-ee-tests</module>
   </modules>
 </project>
