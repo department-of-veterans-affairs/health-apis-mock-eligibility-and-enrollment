@@ -5,10 +5,10 @@
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
     <version>2.0.5</version>
+    <relativePath/>
   </parent>
   <artifactId>mock-ee-tests</artifactId>
   <version>1.0.21-SNAPSHOT</version>
-  <name>health-apis-mock-ee-tests</name>
   <properties>
     <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
     <docker.organization>vasdvp</docker.organization>
@@ -29,7 +29,7 @@
                 <configuration>
                   <images>
                     <image>
-                      <name>${docker.organization}/mock-ee-tests</name>
+                      <name>${docker.organization}/health-apis-${project.artifactId}</name>
                       <build>
                         <dockerFile>Dockerfile</dockerFile>
                         <tags>
@@ -50,7 +50,7 @@
                 <configuration>
                   <images>
                     <image>
-                      <name>${docker.organization}/mock-ee-tests</name>
+                      <name>${docker.organization}/health-apis-${project.artifactId}</name>
                       <build>
                         <dockerFile>Dockerfile</dockerFile>
                         <tags>
