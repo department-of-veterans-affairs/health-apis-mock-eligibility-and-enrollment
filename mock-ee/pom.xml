@@ -3,22 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>gov.va.api.health</groupId>
-    <artifactId>health-apis-parent</artifactId>
+    <artifactId>service-starter</artifactId>
     <version>2.0.5</version>
+    <relativePath/>
   </parent>
   <artifactId>mock-ee</artifactId>
   <version>1.0.21-SNAPSHOT</version>
-  <name>health-apis-mock-ee</name>
+  <packaging>jar</packaging>
   <properties>
     <ee-artifacts.version>1.1.39</ee-artifacts.version>
-    <java.version>1.8</java.version>
-    <build-info-maven-plugin.version>1.2</build-info-maven-plugin.version>
-    <jacoco.coverage>0.95</jacoco.coverage>
-    <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
-    <docker.organization>vasdvp</docker.organization>
-    <docker.baseImage>vasdvp/health-apis-application-base</docker.baseImage>
-    <docker.baseVersion>latest</docker.baseVersion>
-    <docker.tag>latest</docker.tag>
+    <apache.ws.security>1.6.19</apache.ws.security>
   </properties>
   <dependencies>
     <dependency>
@@ -29,10 +23,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -48,18 +38,13 @@
       <artifactId>wsdl4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.ws</groupId>
       <artifactId>spring-ws-security</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.ws.security</groupId>
       <artifactId>wss4j</artifactId>
-      <version>1.6.19</version>
+      <version>${apache.ws.security}</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
@@ -74,183 +59,10 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>gov.va.api.health</groupId>
-      <artifactId>ee-artifacts</artifactId>
-      <version>1.1.36</version>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>pl.project13.maven</groupId>
-        <artifactId>git-commit-id-plugin</artifactId>
-        <configuration>
-          <failOnNoGitDirectory>false</failOnNoGitDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.rodiontsev.maven.plugins</groupId>
-        <artifactId>build-info-maven-plugin</artifactId>
-        <version>${build-info-maven-plugin.version}</version>
-        <configuration>
-          <filename>maven.properties</filename>
-          <projectProperties>
-            <projectProperty>project.id</projectProperty>
-            <projectProperty>project.groupId</projectProperty>
-            <projectProperty>project.artifactId</projectProperty>
-            <projectProperty>project.version</projectProperty>
-          </projectProperties>
-          <systemProperties>
-            <systemProperty>user.name</systemProperty>
-            <systemProperty>user.timezone</systemProperty>
-            <systemProperty>java.vm.vendor</systemProperty>
-            <systemProperty>java.vm.version</systemProperty>
-            <systemProperty>java.vm.name</systemProperty>
-            <systemProperty>java.runtime.version</systemProperty>
-            <systemProperty>os.name</systemProperty>
-            <systemProperty>os.version</systemProperty>
-            <systemProperty>os.arch</systemProperty>
-            <systemProperty>user.name</systemProperty>
-            <systemProperty>user.timezone</systemProperty>
-          </systemProperties>
-          <dateTimePattern>yyyy-MM-dd HH:mm:ss</dateTimePattern>
-          <includeVcsInfo>false</includeVcsInfo>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>extract</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  <profiles>
-    <profile>
-      <id>docker</id>
-      <activation>
-        <file>
-          <exists>src/main/resources/application.properties</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.fabric8</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <version>${docker-maven-plugin.version}</version>
-            <configuration>
-              <images>
-                <image>
-                  <name>${docker.organization}/${project.artifactId}</name>
-                  <build>
-                    <from>${docker.baseImage}:${docker.baseVersion}</from>
-                    <assembly>
-                      <targetDir>/tmp</targetDir>
-                      <inline>
-                        <files>
-                          <file>
-                            <source>target/${project.build.finalName}.jar</source>
-                          </file>
-                        </files>
-                      </inline>
-                    </assembly>
-                    <env>
-                      <AWS_APP_NAME>${project.artifactId}</AWS_APP_NAME>
-                    </env>
-                    <runCmds>
-                      <run>mkdir -p /opt/va</run>
-                      <run>mv /tmp/${project.build.finalName}.jar /opt/va</run>
-                    </runCmds>
-                    <tags>
-                      <tag>${project.version}</tag>
-                      <tag>${docker.tag}</tag>
-                    </tags>
-                  </build>
-                </image>
-              </images>
-            </configuration>
-            <executions>
-              <execution>
-                <id>build</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>build</goal>
-                  <goal>push</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.fabric8</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <version>${docker-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>build-test</id>
-                <configuration>
-                  <images>
-                    <image>
-                      <name>${docker.organization}/mock-ee-tests</name>
-                      <build>
-                        <dockerFile>Dockerfile</dockerFile>
-                        <tags>
-                          <tag>${project.version}</tag>
-                          <tag>${docker.tag}</tag>
-                        </tags>
-                      </build>
-                    </image>
-                  </images>
-                </configuration>
-                <phase>package</phase>
-                <goals>
-                  <goal>build</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>deploy-test</id>
-                <configuration>
-                  <images>
-                    <image>
-                      <name>${docker.organization}/mock-ee-tests</name>
-                      <build>
-                        <dockerFile>Dockerfile</dockerFile>
-                        <tags>
-                          <tag>${project.version}</tag>
-                          <tag>${docker.tag}</tag>
-                        </tags>
-                      </build>
-                    </image>
-                  </images>
-                </configuration>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>push</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
   <distributionManagement>
     <repository>
       <id>health-apis-releases</id>
