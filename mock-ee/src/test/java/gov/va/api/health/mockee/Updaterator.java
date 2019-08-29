@@ -44,7 +44,11 @@ public final class Updaterator {
   @SneakyThrows
   public static void main(String[] args) {
     String configFile = "config/application-dev.properties";
-    boolean commit = true;
+    // only update database if true
+    boolean commit = false;
+    // randomly leave some records unaffected
+    // higher value --> fewer skips
+    double randomSkipFloor = 0.80;
 
     Random random = new Random(3214254852L);
     JAXBContext jaxbContext = JAXBContext.newInstance(GetEESummaryResponse.class);
@@ -57,8 +61,7 @@ public final class Updaterator {
             .getResultList();
 
     for (EeResponseEntity entity : entities) {
-      // randomly leave some records unaffected
-      if (random.nextDouble() >= 0.80) {
+      if (random.nextDouble() >= randomSkipFloor) {
         continue;
       }
 
