@@ -3,6 +3,10 @@ package gov.va.api.health.mockee;
 import static com.google.common.base.Preconditions.checkState;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.common.collect.ImmutableMap;
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import gov.va.med.esr.webservices.jaxws.schemas.GeocodingInfo;
+import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -14,7 +18,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.stream.Collectors;
-
 import javax.persistence.EntityManager;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
@@ -26,29 +29,25 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamSource;
-
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.jpa.HibernatePersistenceProvider;
-
-import com.google.common.collect.ImmutableMap;
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-
-import gov.va.med.esr.webservices.jaxws.schemas.GeocodingInfo;
-import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 
 @Slf4j
 public final class Updaterator {
   @SneakyThrows
   public static void main(String[] args) {
     Random random = new Random(3214254852L);
+    String configFile = "config/application-dev.properties";
+    boolean commit = true;
 
-    EntityManager mitre = new Mitre("config/application-dev.properties").createEntityManager();
+    EntityManager mitre = new Mitre(configFile).createEntityManager();
     mitre.getTransaction().begin();
 
     JAXBContext jaxbContext = JAXBContext.newInstance(GetEESummaryResponse.class);
@@ -59,8 +58,8 @@ public final class Updaterator {
             .getResultList();
 
     for (EeResponseEntity entity : entities) {
+      // randomly leave some records unaffected
       if (random.nextDouble() >= 0.80) {
-        // leave some records unaffected
         continue;
       }
 
@@ -88,14 +87,19 @@ public final class Updaterator {
       entity.payload(newPayload);
     }
 
-    mitre.getTransaction().commit();
+    if (commit) {
+      mitre.getTransaction().commit();
+    } else {
+      mitre.getTransaction().rollback();
+    }
+
     mitre.close();
 
     log.info("done");
     System.exit(0);
   }
 
-  private static void modify(GetEESummaryResponse response) {
+  private static void modify(@NonNull GetEESummaryResponse response) {
     response
         .getSummary()
         .getCommunityCareEligibilityInfo()
@@ -111,7 +115,7 @@ public final class Updaterator {
 
     @SneakyThrows
     Mitre(String configFile) {
-      log.info("Loading Mitre connection configuration from {}", configFile);
+      log.info("Loading MITRE connection configuration from {}", configFile);
       config = new Properties(System.getProperties());
       try (FileInputStream inputStream = new FileInputStream(configFile)) {
         config.load(inputStream);
@@ -122,9 +126,9 @@ public final class Updaterator {
       PersistenceUnitInfo info =
           PersistenceUnit.builder()
               .persistenceUnitName("mitre")
-              .jtaDataSource(mitreDataSource())
+              .jtaDataSource(dataSource())
               .managedClasses(Arrays.asList(EeResponseEntity.class))
-              .properties(mitreProperties())
+              .properties(properties())
               .build();
       return new HibernatePersistenceProvider()
           .createContainerEntityManagerFactory(
@@ -135,7 +139,7 @@ public final class Updaterator {
           .createEntityManager();
     }
 
-    DataSource mitreDataSource() {
+    DataSource dataSource() {
       SQLServerDataSource ds = new SQLServerDataSource();
       ds.setUser(valueOf("spring.datasource.username"));
       ds.setPassword(valueOf("spring.datasource.password"));
@@ -143,7 +147,7 @@ public final class Updaterator {
       return ds;
     }
 
-    Properties mitreProperties() {
+    Properties properties() {
       Properties properties = new Properties();
       properties.put("hibernate.hbm2ddl.auto", "none");
       // CHANGE TO TRUE TO DEBUG
