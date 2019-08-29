@@ -39,6 +39,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 
+/**
+ * Utility to update Mock-EE data. This class connects to the MITRE database and deserializes (and
+ * re-serializes) the payload of each EeResponseEntity to apply the transformation in {@link
+ * #modify(GetEESummaryResponse)}.
+ */
 @Slf4j
 public final class Updaterator {
   @SneakyThrows
@@ -101,6 +106,7 @@ public final class Updaterator {
     System.exit(0);
   }
 
+  /** Edit this method to change how payloads are transformed. */
   private static void modify(@NonNull GetEESummaryResponse response) {
     response
         .getSummary()
