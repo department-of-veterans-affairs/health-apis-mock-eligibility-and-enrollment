@@ -43,14 +43,13 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 public final class Updaterator {
   @SneakyThrows
   public static void main(String[] args) {
-    Random random = new Random(3214254852L);
     String configFile = "config/application-dev.properties";
     boolean commit = true;
 
+    Random random = new Random(3214254852L);
+    JAXBContext jaxbContext = JAXBContext.newInstance(GetEESummaryResponse.class);
     EntityManager mitre = new Mitre(configFile).createEntityManager();
     mitre.getTransaction().begin();
-
-    JAXBContext jaxbContext = JAXBContext.newInstance(GetEESummaryResponse.class);
 
     List<EeResponseEntity> entities =
         mitre
