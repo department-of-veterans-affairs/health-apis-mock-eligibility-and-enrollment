@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import lombok.SneakyThrows;
@@ -33,7 +32,7 @@ public class EeSummaryEndpointTest {
   }
 
   @Test
-  public void correctSummaryResponse() throws DatatypeConfigurationException {
+  public void correctSummaryResponse() {
     String payload =
         "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\n"
             + "            <eesVersion>5.6.0.01001</eesVersion>\\n"
