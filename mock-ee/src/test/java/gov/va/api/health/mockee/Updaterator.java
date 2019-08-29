@@ -69,6 +69,7 @@ public final class Updaterator {
       if (random.nextDouble() >= randomSkipFloor) {
         continue;
       }
+      log.info("Processing " + entity.icn());
 
       JAXBElement<GetEESummaryResponse> elem =
           jaxbContext
@@ -89,7 +90,6 @@ public final class Updaterator {
         newPayload = newPayload.substring(newPayload.indexOf("\n") + 1);
       }
       checkState(newPayload.startsWith("<getEESummaryResponse"));
-      System.out.println(newPayload);
 
       entity.payload(newPayload);
     }
