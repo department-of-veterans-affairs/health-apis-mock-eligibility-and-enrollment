@@ -5,20 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-
 import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.ContactInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.DemographicInfo;
-import gov.va.med.esr.webservices.jaxws.schemas.GeocodingInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
