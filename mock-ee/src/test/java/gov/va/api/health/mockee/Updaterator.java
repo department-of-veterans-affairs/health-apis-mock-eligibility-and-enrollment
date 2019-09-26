@@ -55,7 +55,7 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
  */
 @Slf4j
 public final class Updaterator {
-  private static final Random RANDOM = new Random(3214254852L);
+  private static final Random RANDOM = new Random(321_425_4852L);
 
   private static final Instant NOW =
       ZonedDateTime.parse("2019-09-26T12:59:53.716-04:00").toInstant();
