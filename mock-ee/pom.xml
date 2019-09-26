@@ -4,15 +4,15 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>3.1.2</version>
+    <version>3.1.7</version>
     <relativePath/>
   </parent>
   <artifactId>mock-ee</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>2.0.2</version>
   <packaging>jar</packaging>
   <properties>
     <apache.ws.security>1.6.19</apache.ws.security>
-    <ee-artifacts.version>2.0.2</ee-artifacts.version>
+    <ee-artifacts.version>2.0.4</ee-artifacts.version>
   </properties>
   <dependencies>
     <dependency>
