@@ -5,6 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
+import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
+import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
+import gov.va.med.esr.webservices.jaxws.schemas.ContactInfo;
+import gov.va.med.esr.webservices.jaxws.schemas.DemographicInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.GeocodingInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import java.io.FileInputStream;
@@ -12,9 +17,15 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -28,6 +39,8 @@ import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 import lombok.Builder;
 import lombok.NonNull;
@@ -46,6 +59,14 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
  */
 @Slf4j
 public final class Updaterator {
+  private static final Random RANDOM = new Random(3214254852L);
+
+  private static final Instant NOW =
+      ZonedDateTime.parse("2019-09-26T12:59:53.716-04:00").toInstant();
+
+  private static final Instant YESTERDAY =
+      ZonedDateTime.parse("2019-09-25T12:59:53.716-04:00").toInstant();
+
   @SneakyThrows
   public static void main(String[] args) {
     String configFile = "config/application-dev.properties";
@@ -53,9 +74,8 @@ public final class Updaterator {
     boolean commit = false;
     // randomly leave some records unaffected
     // higher value --> fewer skips
-    double randomSkipFloor = 0.80;
+    double randomSkipFloor = 0.90;
 
-    Random random = new Random(3214254852L);
     JAXBContext jaxbContext = JAXBContext.newInstance(GetEESummaryResponse.class);
     EntityManager mitre = new Mitre(configFile).createEntityManager();
     mitre.getTransaction().begin();
@@ -66,7 +86,7 @@ public final class Updaterator {
             .getResultList();
 
     for (EeResponseEntity entity : entities) {
-      if (random.nextDouble() >= randomSkipFloor) {
+      if (RANDOM.nextDouble() >= randomSkipFloor) {
         continue;
       }
       log.info("Processing " + entity.icn());
@@ -107,15 +127,64 @@ public final class Updaterator {
   }
 
   /** Edit this method to change how payloads are transformed. */
-  private static void modify(@NonNull GetEESummaryResponse response) {
-    response
+  private static void modify(@NonNull GetEESummaryResponse eeResponse) {
+    if (eeResponse.getSummary().getDemographics() == null) {
+      eeResponse.getSummary().setDemographics(DemographicInfo.builder().build());
+    }
+
+    if (eeResponse.getSummary().getDemographics().getContactInfo() == null) {
+      eeResponse.getSummary().getDemographics().setContactInfo(ContactInfo.builder().build());
+    }
+
+    if (eeResponse.getSummary().getDemographics().getContactInfo().getAddresses() == null) {
+      eeResponse
+          .getSummary()
+          .getDemographics()
+          .getContactInfo()
+          .setAddresses(AddressCollection.builder().build());
+    }
+
+    Optional<AddressInfo> maybeAddress =
+        eeResponse
+            .getSummary()
+            .getDemographics()
+            .getContactInfo()
+            .getAddresses()
+            .getAddress()
+            .stream()
+            .filter(a -> "Residential".equalsIgnoreCase(a.getAddressTypeCode()))
+            .findFirst();
+    if (maybeAddress.isEmpty()) {
+      eeResponse
+          .getSummary()
+          .getDemographics()
+          .getContactInfo()
+          .getAddresses()
+          .getAddress()
+          .add(AddressInfo.builder().addressTypeCode("Residential").build());
+    }
+
+    eeResponse
         .getSummary()
-        .getCommunityCareEligibilityInfo()
-        .setGeocodingInfo(
-            GeocodingInfo.builder()
-                .addressLatitude(new BigDecimal("28.1123163"))
-                .addressLongitude(new BigDecimal("-80.6992721"))
-                .build());
+        .getDemographics()
+        .getContactInfo()
+        .getAddresses()
+        .getAddress()
+        .stream()
+        .filter(a -> "Residential".equalsIgnoreCase(a.getAddressTypeCode()))
+        .findFirst()
+        .get()
+        .setAddressChangeDateTime(
+            parseXmlGregorianCalendar(RANDOM.nextBoolean() ? NOW : YESTERDAY));
+
+    System.out.println(eeResponse);
+  }
+
+  @SneakyThrows
+  private static XMLGregorianCalendar parseXmlGregorianCalendar(Instant instant) {
+    GregorianCalendar gCal = new GregorianCalendar();
+    gCal.setTime(Date.from(instant));
+    return DatatypeFactory.newInstance().newXMLGregorianCalendar(gCal);
   }
 
   private static final class Mitre {
