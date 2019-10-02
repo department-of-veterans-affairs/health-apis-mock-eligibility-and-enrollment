@@ -1,8 +1,5 @@
 package gov.va.api.health.mockee;
 
-import java.util.List;
-import java.util.Properties;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -18,9 +15,6 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
-import org.springframework.ws.server.EndpointInterceptor;
-import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
-import org.springframework.ws.soap.security.wss4j2.callback.SimplePasswordValidationCallbackHandler;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
@@ -30,15 +24,31 @@ import org.springframework.xml.xsd.XsdSchema;
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
 
-  @Autowired private Environment env;
-
   public static final String mockEeVersion = "/v0";
+
+  @Autowired private Environment env;
 
   @Value("${ee.header.username}")
   private String eeHeaderUsername;
 
   @Value("${ee.header.password}")
   private String eeHeaderPassword;
+
+  /** Set data source for H2 db. */
+  @Bean(name = "dataSource")
+  public DriverManagerDataSource dataSource() {
+    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+    dataSource.setUrl(env.getProperty("spring.datasource.url"));
+    dataSource.setUsername(env.getProperty("spring.datasource.username"));
+    dataSource.setPassword(env.getProperty("spring.datasource.password"));
+    // schema init
+    Resource initSchema = new ClassPathResource("schema.sql");
+    Resource initData = new ClassPathResource("data.sql");
+    DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
+    DatabasePopulatorUtils.execute(databasePopulator, dataSource);
+    return dataSource;
+  }
 
   /** Default Wsdl. */
   @Bean(name = "summaries")
@@ -65,22 +75,5 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     servlet.setApplicationContext(applicationContext);
     servlet.setTransformWsdlLocations(true);
     return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, mockEeVersion + "/ws/*");
-  }
-
-  @Bean(name = "dataSource")
-  public DriverManagerDataSource dataSource() {
-    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-    dataSource.setUrl(env.getProperty("spring.datasource.url"));
-    dataSource.setUsername(env.getProperty("spring.datasource.username"));
-    dataSource.setPassword(env.getProperty("spring.datasource.password"));
-
-    // schema init
-    Resource initSchema = new ClassPathResource("schema.sql");
-    Resource initData = new ClassPathResource("data.sql");
-    DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
-    DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
-    return dataSource;
   }
 }
