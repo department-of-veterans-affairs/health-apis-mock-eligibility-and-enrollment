@@ -13,6 +13,7 @@
   <properties>
     <apache.ws.security>1.6.19</apache.ws.security>
     <ee-artifacts.version>2.0.4</ee-artifacts.version>
+    <jacoco.coverage>0.94</jacoco.coverage>
   </properties>
   <dependencies>
     <dependency>
