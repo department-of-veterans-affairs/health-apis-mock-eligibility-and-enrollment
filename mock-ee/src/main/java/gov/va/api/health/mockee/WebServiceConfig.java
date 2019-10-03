@@ -1,12 +1,12 @@
 package gov.va.api.health.mockee;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -15,6 +15,9 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.server.EndpointInterceptor;
+import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
+import org.springframework.ws.soap.security.wss4j2.callback.SimplePasswordValidationCallbackHandler;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
@@ -26,23 +29,38 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
   public static final String mockEeVersion = "/v0";
 
-  @Autowired private Environment env;
-
   @Value("${ee.header.username}")
   private String eeHeaderUsername;
 
   @Value("${ee.header.password}")
   private String eeHeaderPassword;
 
+  @Value("${spring.datasource.driver-class-name}")
+  private String driverClassName;
+
+  @Value("${spring.datasource.url}")
+  private String dataSourceUrl;
+
+  @Value("${spring.datasource.username}")
+  private String dataSourceUsername;
+
+  @Value("${spring.datasource.password}")
+  private String dataSourcePassword;
+
+  @Override
+  public void addInterceptors(List<EndpointInterceptor> interceptors) {
+    interceptors.add(securityInterceptor());
+  }
+
   /** Set data source for H2 db. */
   @Bean(name = "dataSource")
   public DriverManagerDataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-    dataSource.setUrl(env.getProperty("spring.datasource.url"));
-    dataSource.setUsername(env.getProperty("spring.datasource.username"));
-    dataSource.setPassword(env.getProperty("spring.datasource.password"));
-    // schema init
+    dataSource.setDriverClassName(driverClassName);
+    dataSource.setUrl(dataSourceUrl);
+    dataSource.setUsername(dataSourceUsername);
+    dataSource.setPassword(dataSourcePassword);
+
     Resource initSchema = new ClassPathResource("schema.sql");
     Resource initData = new ClassPathResource("data.sql");
     DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
@@ -75,5 +93,25 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     servlet.setApplicationContext(applicationContext);
     servlet.setTransformWsdlLocations(true);
     return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, mockEeVersion + "/ws/*");
+  }
+
+  /** Validation for user/password. */
+  @Bean
+  public SimplePasswordValidationCallbackHandler securityCallbackHandler() {
+    SimplePasswordValidationCallbackHandler callbackHandler =
+        new SimplePasswordValidationCallbackHandler();
+    Properties users = new Properties();
+    users.setProperty(eeHeaderUsername, eeHeaderPassword);
+    callbackHandler.setUsers(users);
+    return callbackHandler;
+  }
+
+  /** Security Interceptor. */
+  @Bean
+  public Wss4jSecurityInterceptor securityInterceptor() {
+    Wss4jSecurityInterceptor securityInterceptor = new Wss4jSecurityInterceptor();
+    securityInterceptor.setValidationActions("UsernameToken");
+    securityInterceptor.setValidationCallbackHandler(securityCallbackHandler());
+    return securityInterceptor;
   }
 }
