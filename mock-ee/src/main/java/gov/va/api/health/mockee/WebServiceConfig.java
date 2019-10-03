@@ -8,11 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.init.DatabasePopulator;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.server.EndpointInterceptor;
@@ -50,22 +45,6 @@ public class WebServiceConfig extends WsConfigurerAdapter {
   @Override
   public void addInterceptors(List<EndpointInterceptor> interceptors) {
     interceptors.add(securityInterceptor());
-  }
-
-  /** Set data source for H2 db. */
-  @Bean(name = "dataSource")
-  public DriverManagerDataSource dataSource() {
-    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(driverClassName);
-    dataSource.setUrl(dataSourceUrl);
-    dataSource.setUsername(dataSourceUsername);
-    dataSource.setPassword(dataSourcePassword);
-
-    Resource initSchema = new ClassPathResource("schema.sql");
-    Resource initData = new ClassPathResource("data.sql");
-    DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema, initData);
-    DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-    return dataSource;
   }
 
   /** Default Wsdl. */
