@@ -8,4 +8,8 @@
     <Method name="hashCode"/>
     <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
   </Match>
+  <Match>
+    <Method name="persistEntityManager"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
 </FindBugsFilter>

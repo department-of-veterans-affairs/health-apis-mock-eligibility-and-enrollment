@@ -2,10 +2,11 @@ package gov.va.api.health.mockee;
 
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
-
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,9 +15,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.transform.stream.StreamSource;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -29,33 +30,13 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 @Endpoint
-@Transactional
-@Slf4j
 public class EeSummaryEndpoint {
 
   private static final String NAMESPACE_URI = "http://jaxws.webservices.esr.med.va.gov/schemas";
 
+  @Autowired ResourceLoader resourceLoader;
+
   @PersistenceContext private EntityManager entityManager;
-
-  @Autowired
-  ResourceLoader resourceLoader;
-
-  public Resource[] loadResources(String pattern) throws IOException {
-    return ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(pattern);
-  }
-
-  public List<EeResponseEntity> setEntityManager() throws IOException {
-    List<EeResponseEntity> eeResponseEntities = new LinkedList<>();
-    Resource[] resources = loadResources("classpath*:data/*.xml");
-    for (Resource resource : resources) {
-      String icn = resource.getFilename().substring(0,resource.getFilename().length()-4);
-      InputStream inputStream = new ClassPathResource("data/" + resource.getFilename()).getInputStream();
-      BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-      String xml = reader.lines().collect(Collectors.joining("\n"));
-      eeResponseEntities.add(EeResponseEntity.builder().icn(icn).payload(xml).build());
-    }
-    return eeResponseEntities;
-  }
 
   /** Find the EeResponseEntity mapped to the icn.* */
   public EeResponseEntity findEeResponseEntity(String icn) {
@@ -66,23 +47,12 @@ public class EeSummaryEndpoint {
     return entity;
   }
 
-  public void entityManager() {
-    entityManager.persist(EeResponseEntity.builder().icn("9").payload("<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\n" +
-            "  <summary>\n" +
-            "  </summary>\n" +
-            "  <eesVersion>5.6.0.01001</eesVersion>\n" +
-            "  <invocationDate>2019-05-01T07:56:02</invocationDate>\n" +
-            "</getEESummaryResponse>").build());
-  }
-
   /** Get EE Summary Response. */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getEESummaryRequest")
   @ResponsePayload
   @SneakyThrows
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
-    setEntityManager();
-    entityManager();
     final String icn = request.getValue().getKey();
     EeResponseEntity responseEntity = findEeResponseEntity(icn);
     String payload = responseEntity.payload();
@@ -91,5 +61,25 @@ public class EeSummaryEndpoint {
         .unmarshal(new StreamSource(new StringReader(payload)), GetEESummaryResponse.class);
   }
 
-
+  /** Create EeResponseEntity for each data file, persist EntityManager. */
+  @Transactional
+  @EventListener(ApplicationStartedEvent.class)
+  public void persistEntityManager() throws IOException {
+    Resource[] resources =
+        ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
+            .getResources("classpath*:data/*.xml");
+    for (Resource resource : resources) {
+      String filename = resource.getFilename();
+      if (filename != null) {
+        String icn = filename.substring(0, filename.indexOf("."));
+        InputStream inputStream =
+            new ClassPathResource("data/" + resource.getFilename()).getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String xml = reader.lines().collect(Collectors.joining("\n"));
+        entityManager.persist(EeResponseEntity.builder().icn(icn).payload(xml).build());
+        inputStream.close();
+        reader.close();
+      }
+    }
+  }
 }

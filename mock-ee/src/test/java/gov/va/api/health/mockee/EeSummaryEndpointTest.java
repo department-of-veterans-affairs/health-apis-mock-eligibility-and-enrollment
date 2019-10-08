@@ -21,9 +21,9 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import lombok.SneakyThrows;
 import org.junit.Test;
+import org.springframework.core.io.ResourceLoader;
 
 public class EeSummaryEndpointTest {
-
   @SneakyThrows
   private static XMLGregorianCalendar parseXmlGregorianCalendar(String timestamp) {
     GregorianCalendar gCal = new GregorianCalendar();
@@ -31,7 +31,7 @@ public class EeSummaryEndpointTest {
     return DatatypeFactory.newInstance().newXMLGregorianCalendar(gCal);
   }
 
-  /*@Test
+  @Test
   public void correctSummaryResponse() {
     String payload =
         "<getEESummaryResponse xmlns=\"http://jaxws.webservices.esr.med.va.gov/schemas\">\\n"
@@ -49,17 +49,14 @@ public class EeSummaryEndpointTest {
             + "            </summary>\\n"
             + "            <invocationDate>2019-05-01T07:56:02.00Z</invocationDate>\\n"
             + "        </getEESummaryResponse>";
-
     EntityManager entityManager = mock(EntityManager.class);
+    ResourceLoader resourceLoader = mock(ResourceLoader.class);
     when(entityManager.find(EeResponseEntity.class, "1000003"))
         .thenReturn(EeResponseEntity.builder().icn("1000003").payload(payload).build());
-
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(entityManager);
-
+    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(resourceLoader, entityManager);
     JAXBElement<GetEESummaryRequest> request =
         new ObjectFactory()
             .createGetEESummaryRequest(GetEESummaryRequest.builder().key("1000003").build());
-
     GetEESummaryResponse expected =
         GetEESummaryResponse.builder()
             .eesVersion("5.6.0.01001")
@@ -83,22 +80,18 @@ public class EeSummaryEndpointTest {
                             .build())
                     .build())
             .build();
-
     assertThat(testEndpoint.getEeSummaryRequest(request).getValue()).isEqualTo(expected);
   }
 
   @Test(expected = Exceptions.UnknownPatientIcnException.class)
   public void noEntriesAreFound() {
-
     EntityManager entityManager = mock(EntityManager.class);
+    ResourceLoader resourceLoader = mock(ResourceLoader.class);
     when(entityManager.find(EeResponseEntity.class, "100")).thenReturn(null);
-
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(entityManager);
-
+    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(resourceLoader, entityManager);
     JAXBElement<GetEESummaryRequest> request =
         new ObjectFactory()
             .createGetEESummaryRequest(GetEESummaryRequest.builder().key("100").build());
-
     testEndpoint.getEeSummaryRequest(request);
-  }*/
+  }
 }
