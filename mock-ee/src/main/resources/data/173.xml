@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Atlanta</city>
+            <line1/>
+            <line2/>
+            <line3>369 Summerhouse St.</line3>
+            <postalCode>30302</postalCode>
+            <state>GA</state>
+            <zipCode>30302</zipCode>
+            <zipPlus4>404</zipPlus4>
+            <addressChangeDateTime>2019-09-26T12:59:53.716-04:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>X</vceCode>
+          <vceDescription>Ineligible</vceDescription>
+          <vceEffectiveDate>1978-02-15T16:23:40.147-05:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>28.1123163</addressLatitude>
+        <addressLongitude>-80.6992721</addressLongitude>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Atlanta</city>
+            <line1>Apt. 100</line1>
+            <line2/>
+            <line3>629 Jones Street</line3>
+            <postalCode>30302</postalCode>
+            <state>GA</state>
+            <zipCode>30302</zipCode>
+            <zipPlus4>404</zipPlus4>
+            <addressChangeDateTime>2019-09-25T12:59:53.716-04:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>G</vceCode>
+          <vceDescription>Grandfathered</vceDescription>
+          <vceEffectiveDate>1953-10-29T16:23:40.203-05:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>N</vceCode>
+          <vceDescription>State No Full Service VA</vceDescription>
+          <vceEffectiveDate>1949-03-02T16:23:40.204-05:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>28.1123163</addressLatitude>
+        <addressLongitude>-80.6992721</addressLongitude>
+        <geocodeDate>2019-09-25T12:59:53.716-04:00</geocodeDate>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>

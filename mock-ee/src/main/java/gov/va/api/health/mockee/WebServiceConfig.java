@@ -1,13 +1,18 @@
 package gov.va.api.health.mockee;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.server.EndpointInterceptor;
@@ -17,6 +22,10 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 
 @EnableWs
 @Configuration
@@ -29,18 +38,6 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
   @Value("${ee.header.password}")
   private String eeHeaderPassword;
-
-  @Value("${spring.datasource.driver-class-name}")
-  private String driverClassName;
-
-  @Value("${spring.datasource.url}")
-  private String dataSourceUrl;
-
-  @Value("${spring.datasource.username}")
-  private String dataSourceUsername;
-
-  @Value("${spring.datasource.password}")
-  private String dataSourcePassword;
 
   @Override
   public void addInterceptors(List<EndpointInterceptor> interceptors) {

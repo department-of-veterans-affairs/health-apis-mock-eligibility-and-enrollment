@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Montgomery</city>
+            <line1/>
+            <line2/>
+            <line3>2 Woodland Ave.</line3>
+            <postalCode>36101</postalCode>
+            <state>AL</state>
+            <zipCode>36101</zipCode>
+            <zipPlus4>0001</zipPlus4>
+            <addressChangeDateTime>2019-09-25T12:59:53.716-04:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>G</vceCode>
+          <vceDescription>Grandfathered</vceDescription>
+          <vceEffectiveDate>2017-07-11T16:23:40.186-04:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>U</vceCode>
+          <vceDescription>Urgent Care</vceDescription>
+          <vceEffectiveDate>1989-10-07T16:23:40.187-04:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>28.1123163</addressLatitude>
+        <addressLongitude>-80.6992721</addressLongitude>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>
