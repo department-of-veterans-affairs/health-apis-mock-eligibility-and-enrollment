@@ -13,12 +13,13 @@
   <properties>
     <apache.ws.security>1.6.19</apache.ws.security>
     <ee-artifacts.version>2.0.5</ee-artifacts.version>
+    <jacoco.coverage>0.94</jacoco.coverage>
   </properties>
   <dependencies>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -45,18 +46,6 @@
       <groupId>org.apache.ws.security</groupId>
       <artifactId>wss4j</artifactId>
       <version>${apache.ws.security}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>mssql-jdbc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

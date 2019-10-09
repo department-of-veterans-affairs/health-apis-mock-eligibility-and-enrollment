@@ -4,7 +4,7 @@ A [Spring Boot](https://spring.io/projects/spring-boot) microservice
 that emulates the Eligibility and Enrollment (E&E) service.
 This can be used to provide synthetic E&E data outside the VA Intranet.
 
-To invoke, post to the `/ws` path. Example request:
+To invoke, post to the `/v0/ws` path. Example request:
 
 ```
 <SOAP-ENV:Envelope
@@ -29,13 +29,10 @@ To invoke, post to the `/ws` path. Example request:
 </SOAP-ENV:Envelope>
 ```
 
-Mock data is stored in a test environment database.
+Mock data is stored in XML files within the repository that are loaded into an embedded H2 database upon startup.
 These application properties must be configured:
 
 ```
-spring.datasource.url=sqlserver://foo.gov:port;database=databaseName;user=dbUsername;password=dbPassword;
-spring.datasource.username=dbUsername
-spring.datasource.password=dbPassword
 ee.header.password=MockEEPassword
 ee.header.username=MockEEUsername
 ```

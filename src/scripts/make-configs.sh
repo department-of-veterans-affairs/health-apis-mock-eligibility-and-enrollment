@@ -10,13 +10,9 @@ Generate configurations for local development.
 Options
      --debug               Enable debugging
  -h, --help                Print this help and exit.
-     --secrets-conf <file> The configuration file with secrets!
 
 Secrets Configuration
  This bash file is sourced and expected to set the following variables
- -  DB_URL
- -  DB_PASSWORD
- -  DB_USER
 
 $1
 EOF
@@ -24,7 +20,6 @@ exit 1
 }
 
 REPO=$(cd $(dirname $0)/../.. && pwd)
-SECRETS="$REPO/secrets.conf"
 PROFILE=dev
 MARKER=$(date +%s)
 ARGS=$(getopt -n $(basename ${0}) \
@@ -37,21 +32,10 @@ do
   case "$1" in
     --debug) set -x;;
     -h|--help) usage "halp! what this do?";;
-    --secrets-conf) SECRETS="$2";;
     --) shift;break;;
   esac
   shift;
 done
-
-echo "Loading secrets: $SECRETS"
-[ ! -f "$SECRETS" ] && usage "File not found: $SECRETS"
-. $SECRETS
-
-MISSING_SECRETS=false
-[ -z "$DB_URL" ] && echo "Missing configuration: DB_URL" && MISSING_SECRETS=true
-[ -z "$DB_PASSWORD" ] && echo "Missing configuration: DB_PASSWORD" && MISSING_SECRETS=true
-[ -z "$DB_USER" ] && echo "Missing configuration: DB_USER" && MISSING_SECRETS=true
-[ $MISSING_SECRETS == true ] && usage "Missing configuration secrets, please update $SECRETS"
 
 makeConfig() {
   local project="$1"
@@ -99,9 +83,6 @@ sendMoarSpams() {
 }
 
 makeConfig mock-ee $PROFILE
-configValue mock-ee $PROFILE spring.datasource.url "$DB_URL"
-configValue mock-ee $PROFILE spring.datasource.password "$DB_PASSWORD"
-configValue mock-ee $PROFILE spring.datasource.username "$DB_USER"
 configValue mock-ee $PROFILE ee.header.password "MockEEPassword"
 configValue mock-ee $PROFILE ee.header.username "MockEEUsername"
 

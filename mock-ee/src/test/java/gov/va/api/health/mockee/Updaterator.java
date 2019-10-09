@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.ContactInfo;
@@ -47,6 +46,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * Utility to update Mock-EE data. This class connects to the MITRE database and deserializes (and
@@ -213,10 +213,11 @@ public final class Updaterator {
     }
 
     DataSource dataSource() {
-      SQLServerDataSource ds = new SQLServerDataSource();
-      ds.setUser(valueOf("spring.datasource.username"));
+      DriverManagerDataSource ds = new DriverManagerDataSource();
+      ds.setDriverClassName(valueOf("spring.datasource.driver-class-name"));
+      ds.setUsername(valueOf("spring.datasource.username"));
       ds.setPassword(valueOf("spring.datasource.password"));
-      ds.setURL(valueOf("spring.datasource.url"));
+      ds.setUrl(valueOf("spring.datasource.url"));
       return ds;
     }
 

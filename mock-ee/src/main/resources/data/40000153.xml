@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Tallahassee</city>
+            <line1>361 Summerhouse St.</line1>
+            <line2/>
+            <line3/>
+            <postalCode>32301</postalCode>
+            <state>FL</state>
+            <zipCode>32301</zipCode>
+            <zipPlus4>0100</zipPlus4>
+            <addressChangeDateTime>2019-09-25T12:59:53.716-04:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>ND</vceCode>
+          <vceDescription>Not determined Community</vceDescription>
+          <vceEffectiveDate>2011-08-12T16:23:40.112-04:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <geocodeDate>2019-09-26T12:59:53.716-04:00</geocodeDate>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>

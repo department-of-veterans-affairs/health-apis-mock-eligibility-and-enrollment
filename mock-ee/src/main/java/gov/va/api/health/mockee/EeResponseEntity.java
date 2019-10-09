@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "ee_summaries", schema = "synthea")
+@Table(name = "ee_summaries")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EeResponseEntity {

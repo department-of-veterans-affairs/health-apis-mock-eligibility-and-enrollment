@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Charleston</city>
+            <line1/>
+            <line2/>
+            <line3>595 Summerhouse St.</line3>
+            <postalCode>29401</postalCode>
+            <state>SC</state>
+            <zipCode>29401</zipCode>
+            <zipPlus4>1100</zipPlus4>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>G</vceCode>
+          <vceDescription>Grandfathered</vceDescription>
+          <vceEffectiveDate>1998-01-04T16:23:40.188-05:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>N</vceCode>
+          <vceDescription>State No Full Service VA</vceDescription>
+          <vceEffectiveDate>1965-07-04T16:23:40.188-04:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>28.1123163</addressLatitude>
+        <addressLongitude>-80.6992721</addressLongitude>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>
