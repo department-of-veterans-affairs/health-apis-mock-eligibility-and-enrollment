@@ -2,8 +2,6 @@ package gov.va.api.health.mockee;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
@@ -21,7 +19,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.GregorianCalendar;
-import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -30,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -110,13 +106,9 @@ public class EeSummaryEndpointTest {
 
   @Test(expected = Exceptions.UnknownPatientIcnException.class)
   public void noEntriesAreFound() {
-    EntityManager entityManager = mock(EntityManager.class);
-    ResourceLoader resourceLoader = mock(ResourceLoader.class);
-    when(entityManager.find(EeResponseEntity.class, "100")).thenReturn(null);
-    EeSummaryEndpoint testEndpoint = new EeSummaryEndpoint(resourceLoader, entityManager);
     JAXBElement<GetEESummaryRequest> request =
         new ObjectFactory()
             .createGetEESummaryRequest(GetEESummaryRequest.builder().key("100").build());
-    testEndpoint.getEeSummaryRequest(request);
+    eeSummaryEndpoint.getEeSummaryRequest(request);
   }
 }

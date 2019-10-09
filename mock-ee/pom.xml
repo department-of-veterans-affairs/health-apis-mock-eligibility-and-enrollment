@@ -13,7 +13,6 @@
   <properties>
     <apache.ws.security>1.6.19</apache.ws.security>
     <ee-artifacts.version>2.0.5</ee-artifacts.version>
-    <jacoco.coverage>0.94</jacoco.coverage>
   </properties>
   <dependencies>
     <dependency>
@@ -46,10 +45,6 @@
       <groupId>org.apache.ws.security</groupId>
       <artifactId>wss4j</artifactId>
       <version>${apache.ws.security}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

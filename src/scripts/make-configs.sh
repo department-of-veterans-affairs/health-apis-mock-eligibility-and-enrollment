@@ -10,7 +10,6 @@ Generate configurations for local development.
 Options
      --debug               Enable debugging
  -h, --help                Print this help and exit.
-     --secrets-conf <file> The configuration file with secrets!
 
 Secrets Configuration
  This bash file is sourced and expected to set the following variables
@@ -21,7 +20,6 @@ exit 1
 }
 
 REPO=$(cd $(dirname $0)/../.. && pwd)
-SECRETS="$REPO/secrets.conf"
 PROFILE=dev
 MARKER=$(date +%s)
 ARGS=$(getopt -n $(basename ${0}) \
@@ -34,15 +32,10 @@ do
   case "$1" in
     --debug) set -x;;
     -h|--help) usage "halp! what this do?";;
-    --secrets-conf) SECRETS="$2";;
     --) shift;break;;
   esac
   shift;
 done
-
-echo "Loading secrets: $SECRETS"
-[ ! -f "$SECRETS" ] && usage "File not found: $SECRETS"
-. $SECRETS
 
 makeConfig() {
   local project="$1"
