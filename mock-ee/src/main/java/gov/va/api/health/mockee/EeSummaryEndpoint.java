@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -29,8 +28,6 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 public class EeSummaryEndpoint {
 
   private static final String NAMESPACE_URI = "http://jaxws.webservices.esr.med.va.gov/schemas";
-
-  @Autowired ResourceLoader resourceLoader;
 
   @PersistenceContext private EntityManager entityManager;
 
