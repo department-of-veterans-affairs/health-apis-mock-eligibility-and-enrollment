@@ -2,6 +2,7 @@ package gov.va.api.health.mockee;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
@@ -27,11 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class, WebServiceConfig.class})
 public class EeSummaryEndpointTest {
+
   @Autowired EeSummaryEndpoint eeSummaryEndpoint;
 
   @SneakyThrows
@@ -102,6 +105,14 @@ public class EeSummaryEndpointTest {
                     .build())
             .build();
     assertThat(eeSummaryEndpoint.getEeSummaryRequest(request).getValue()).isEqualTo(expected);
+  }
+
+  @Test(expected = RuntimeException.class)
+  @SneakyThrows
+  public void initDataError() {
+    ResourceLoader resourceLoader = mock(ResourceLoader.class);
+    EeSummaryEndpoint errorEndpoint = new EeSummaryEndpoint(resourceLoader, null);
+    errorEndpoint.initData();
   }
 
   @Test(expected = Exceptions.UnknownPatientIcnException.class)

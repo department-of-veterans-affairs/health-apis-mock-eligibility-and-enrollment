@@ -2,12 +2,8 @@ package gov.va.api.health.mockee;
 
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.xml.bind.JAXBContext;
@@ -15,13 +11,13 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.transform.stream.StreamSource;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.ResourcePatternUtils;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -62,23 +58,24 @@ public class EeSummaryEndpoint {
   }
 
   /** Create EeResponseEntity for each data file, persist EntityManager. */
+  @SneakyThrows
   @Transactional
   @EventListener(ApplicationStartedEvent.class)
-  public void persistEntityManager() throws IOException {
+  public void initData() {
     Resource[] resources =
-        ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
-            .getResources("classpath*:data/*.xml");
+        new PathMatchingResourcePatternResolver().getResources("classpath*:data/*.xml");
     for (Resource resource : resources) {
-      String filename = resource.getFilename();
-      if (filename != null) {
+      try {
+        String filename = resource.getFilename();
+        if (filename == null) {
+          throw new IllegalStateException("XML data file is invalid.");
+        }
         String icn = filename.substring(0, filename.indexOf("."));
-        InputStream inputStream =
-            new ClassPathResource("data/" + resource.getFilename()).getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String xml = reader.lines().collect(Collectors.joining("\n"));
+        InputStream inputStream = resource.getInputStream();
+        String xml = IOUtils.toString(inputStream, "UTF-8");
         entityManager.persist(EeResponseEntity.builder().icn(icn).payload(xml).build());
-        inputStream.close();
-        reader.close();
+      } catch (Exception e) {
+        throw new RuntimeException("Unable to load data. Reason: " + e.getMessage());
       }
     }
   }
