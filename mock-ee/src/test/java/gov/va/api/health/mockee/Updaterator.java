@@ -1,58 +1,35 @@
 package gov.va.api.health.mockee;
 
-import static com.google.common.base.Preconditions.checkState;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.google.common.collect.ImmutableMap;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.ContactInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.DemographicInfo;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
-import java.io.FileInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.SharedCacheMode;
-import javax.persistence.ValidationMode;
-import javax.persistence.spi.ClassTransformer;
-import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
-import lombok.Builder;
 import lombok.NonNull;
-import lombok.Singular;
 import lombok.SneakyThrows;
-import lombok.Value;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-/**
- * Utility to update Mock-EE data. This class connects to the MITRE database and deserializes (and
- * re-serializes) the payload of each EeResponseEntity to apply the transformation in {@link
- * #modify(GetEESummaryResponse)}.
- */
+/** Utility to edit Mock-EE data. */
 @Slf4j
 public final class Updaterator {
   private static final Random RANDOM = new Random(321_425_4852L);
@@ -65,33 +42,28 @@ public final class Updaterator {
 
   @SneakyThrows
   public static void main(String[] args) {
-    String configFile = "config/application-dev.properties";
-    // only update database if true
-    boolean commit = false;
     // randomly leave some records unaffected
     // higher value --> fewer skips
     double randomSkipFloor = 0.90;
 
     JAXBContext jaxbContext = JAXBContext.newInstance(GetEESummaryResponse.class);
-    EntityManager mitre = new Mitre(configFile).createEntityManager();
-    mitre.getTransaction().begin();
 
-    List<EeResponseEntity> entities =
-        mitre
-            .createQuery("Select e from EeResponseEntity e", EeResponseEntity.class)
-            .getResultList();
+    List<Path> paths =
+        Files.find(Paths.get("src/main/resources/data"), 1, (p, a) -> true)
+            .filter(p -> p.toFile().getName().endsWith("xml"))
+            .collect(Collectors.toList());
 
-    for (EeResponseEntity entity : entities) {
+    for (Path path : paths) {
       if (RANDOM.nextDouble() >= randomSkipFloor) {
         continue;
       }
-      log.info("Processing " + entity.icn());
+      log.info("Processing " + path.toFile().getName());
 
+      String payload = Files.readString(path);
       JAXBElement<GetEESummaryResponse> elem =
           jaxbContext
               .createUnmarshaller()
-              .unmarshal(
-                  new StreamSource(new StringReader(entity.payload())), GetEESummaryResponse.class);
+              .unmarshal(new StreamSource(new StringReader(payload)), GetEESummaryResponse.class);
 
       modify(elem.getValue());
 
@@ -101,22 +73,8 @@ public final class Updaterator {
       marshaller.marshal(elem, newPayloadWriter);
 
       String newPayload = newPayloadWriter.toString();
-      if (newPayload.startsWith("<?xml")) {
-        // hack... chop off the opening <?xml> tag
-        newPayload = newPayload.substring(newPayload.indexOf("\n") + 1);
-      }
-      checkState(newPayload.startsWith("<getEESummaryResponse"));
-
-      entity.payload(newPayload);
+      Files.writeString(path, newPayload, StandardOpenOption.TRUNCATE_EXISTING);
     }
-
-    if (commit) {
-      mitre.getTransaction().commit();
-    } else {
-      mitre.getTransaction().rollback();
-    }
-
-    mitre.close();
 
     log.info("done");
     System.exit(0);
@@ -181,108 +139,5 @@ public final class Updaterator {
     GregorianCalendar gCal = new GregorianCalendar();
     gCal.setTime(Date.from(instant));
     return DatatypeFactory.newInstance().newXMLGregorianCalendar(gCal);
-  }
-
-  private static final class Mitre {
-    private final Properties config;
-
-    @SneakyThrows
-    Mitre(String configFile) {
-      log.info("Loading MITRE connection configuration from {}", configFile);
-      config = new Properties(System.getProperties());
-      try (FileInputStream inputStream = new FileInputStream(configFile)) {
-        config.load(inputStream);
-      }
-    }
-
-    EntityManager createEntityManager() {
-      PersistenceUnitInfo info =
-          PersistenceUnit.builder()
-              .persistenceUnitName("mitre")
-              .jtaDataSource(dataSource())
-              .managedClasses(Arrays.asList(EeResponseEntity.class))
-              .properties(properties())
-              .build();
-      return new HibernatePersistenceProvider()
-          .createContainerEntityManagerFactory(
-              info,
-              ImmutableMap.of(
-                  AvailableSettings.JPA_JDBC_DRIVER,
-                  "com.microsoft.sqlserver.jdbc.SQLServerDriver"))
-          .createEntityManager();
-    }
-
-    DataSource dataSource() {
-      DriverManagerDataSource ds = new DriverManagerDataSource();
-      ds.setDriverClassName(valueOf("spring.datasource.driver-class-name"));
-      ds.setUsername(valueOf("spring.datasource.username"));
-      ds.setPassword(valueOf("spring.datasource.password"));
-      ds.setUrl(valueOf("spring.datasource.url"));
-      return ds;
-    }
-
-    Properties properties() {
-      Properties properties = new Properties();
-      properties.put("hibernate.hbm2ddl.auto", "none");
-      // CHANGE TO TRUE TO DEBUG
-      properties.put("hibernate.show_sql", "false");
-      properties.put("hibernate.format_sql", "true");
-      properties.put("hibernate.globally_quoted_identifiers", "true");
-      return properties;
-    }
-
-    String valueOf(String name) {
-      String value = config.getProperty(name, "");
-      assertThat(value).withFailMessage("System property %s must be specified.", name).isNotBlank();
-      return value;
-    }
-  }
-
-  @Value
-  @Builder
-  @Accessors(fluent = false)
-  private static final class PersistenceUnit implements PersistenceUnitInfo {
-    String persistenceUnitName;
-
-    @Builder.Default
-    String persistenceProviderClassName = HibernatePersistenceProvider.class.getName();
-
-    @Builder.Default
-    PersistenceUnitTransactionType transactionType = PersistenceUnitTransactionType.RESOURCE_LOCAL;
-
-    DataSource jtaDataSource;
-    @Builder.Default List<String> mappingFileNames = Collections.emptyList();
-    @Builder.Default List<URL> jarFileUrls = Collections.emptyList();
-    URL persistenceUnitRootUrl;
-    @Singular List<Class<?>> managedClasses;
-    @Builder.Default boolean excludeUnlistedClasses = false;
-    @Builder.Default SharedCacheMode sharedCacheMode = SharedCacheMode.NONE;
-    @Builder.Default ValidationMode validationMode = ValidationMode.AUTO;
-    @Builder.Default Properties properties = new Properties();
-    @Builder.Default String persistenceXMLSchemaVersion = "2.1";
-    @Builder.Default ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-    @Override
-    public void addTransformer(ClassTransformer transformer) {}
-
-    @Override
-    public boolean excludeUnlistedClasses() {
-      return excludeUnlistedClasses;
-    }
-
-    @Override
-    public List<String> getManagedClassNames() {
-      return managedClasses.stream().map(Class::getName).collect(Collectors.toList());
-    }
-
-    @Override
-    public ClassLoader getNewTempClassLoader() {
-      return null;
-    }
-
-    @Override
-    public DataSource getNonJtaDataSource() {
-      return getJtaDataSource();
-    }
   }
 }
