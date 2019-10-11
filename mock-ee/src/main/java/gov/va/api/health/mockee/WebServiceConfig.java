@@ -36,10 +36,10 @@ public class WebServiceConfig extends WsConfigurerAdapter {
   }
 
   /** Default Wsdl. */
-  @Bean(name = "summaries")
+  @Bean(name = "eeSummary")
   public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema eeSchema) {
     DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
-    wsdl11Definition.setPortTypeName("SummaryPort");
+    wsdl11Definition.setPortTypeName("eeSummaryPort");
     wsdl11Definition.setLocationUri(mockEeVersion + "/ws");
     wsdl11Definition.setTargetNamespace("http://jaxws.webservices.esr.med.va.gov/schemas");
     wsdl11Definition.setSchema(eeSchema);
