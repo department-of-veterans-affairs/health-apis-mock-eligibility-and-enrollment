@@ -26,7 +26,6 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 @Endpoint
 public class EeSummaryEndpoint {
-
   private static final String NAMESPACE_URI = "http://jaxws.webservices.esr.med.va.gov/schemas";
 
   @PersistenceContext private EntityManager entityManager;
@@ -35,7 +34,7 @@ public class EeSummaryEndpoint {
   public EeResponseEntity findEeResponseEntity(String icn) {
     EeResponseEntity entity = entityManager.find(EeResponseEntity.class, icn);
     if (entity == null) {
-      throw new Exceptions.UnknownPatientIcnException(icn);
+      throw new UnknownPatientIcnException();
     }
     return entity;
   }
@@ -62,18 +61,21 @@ public class EeSummaryEndpoint {
     Resource[] resources =
         new PathMatchingResourcePatternResolver().getResources("classpath*:data/*.xml");
     for (Resource resource : resources) {
-      try {
-        String filename = resource.getFilename();
-        if (filename == null) {
-          throw new IllegalStateException("XML data file is invalid.");
-        }
-        String icn = filename.substring(0, filename.indexOf("."));
-        InputStream inputStream = resource.getInputStream();
+      String filename = resource.getFilename();
+      if (filename == null) {
+        throw new IllegalStateException("Invalid filename for resource " + resource);
+      }
+      String icn = filename.substring(0, filename.indexOf("."));
+      try (InputStream inputStream = resource.getInputStream()) {
         String xml = IOUtils.toString(inputStream, "UTF-8");
         entityManager.persist(EeResponseEntity.builder().icn(icn).payload(xml).build());
-      } catch (Exception e) {
-        throw new RuntimeException("Unable to load data. Reason: " + e.getMessage());
       }
+    }
+  }
+
+  static final class UnknownPatientIcnException extends RuntimeException {
+    UnknownPatientIcnException() {
+      super("PERSON_NOT_FOUND");
     }
   }
 }

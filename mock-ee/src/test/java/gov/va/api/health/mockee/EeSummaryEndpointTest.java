@@ -112,7 +112,7 @@ public class EeSummaryEndpointTest {
     errorEndpoint.initData();
   }
 
-  @Test(expected = Exceptions.UnknownPatientIcnException.class)
+  @Test(expected = EeSummaryEndpoint.UnknownPatientIcnException.class)
   public void noEntriesAreFound() {
     JAXBElement<GetEESummaryRequest> request =
         new ObjectFactory()
