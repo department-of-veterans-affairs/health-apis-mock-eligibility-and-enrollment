@@ -1,13 +1,25 @@
 package gov.va.api.health.mockee;
 
+import static com.google.common.base.Preconditions.checkState;
+
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Properties;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import lombok.SneakyThrows;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.server.EndpointInterceptor;
@@ -17,6 +29,9 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 @EnableWs
 @Configuration
@@ -46,10 +61,34 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     return wsdl11Definition;
   }
 
-  /** Get XSD Schema. */
+  /** Extract XSD schema from WSDL. */
   @Bean
+  @SneakyThrows
   public XsdSchema eeSchema() {
-    return new SimpleXsdSchema(new ClassPathResource("wsdl/eeSummary.xsd"));
+    DocumentBuilderFactory dbFac = DocumentBuilderFactory.newInstance();
+    dbFac.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    dbFac.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    dbFac.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
+    Document wsdlDoc =
+        dbFac
+            .newDocumentBuilder()
+            .parse(new ClassPathResource("META-INF/wsdl/eeSummary.wsdl").getInputStream());
+
+    NodeList schemaNodes = wsdlDoc.getDocumentElement().getElementsByTagName("xs:schema");
+    checkState(schemaNodes.getLength() == 1);
+    Node schemaNode = schemaNodes.item(0);
+    TransformerFactory transFac = TransformerFactory.newInstance();
+    transFac.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    transFac.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+    transFac.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    Transformer transformer = transFac.newTransformer();
+    try (StringWriter writer = new StringWriter()) {
+      StreamResult result = new StreamResult(writer);
+      transformer.transform(new DOMSource(schemaNode), result);
+      String xsd = writer.toString();
+      return new SimpleXsdSchema(new InputStreamResource(IOUtils.toInputStream(xsd, "UTF-8")));
+    }
   }
 
   /** Set up Servlet. */
