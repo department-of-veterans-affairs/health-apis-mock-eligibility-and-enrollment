@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Palm Bay</city>
+            <line1>250 Osmosis Dr SE</line1>
+            <state>FL</state>
+            <zipCode>32909</zipCode>
+            <addressChangeDateTime>2019-11-12T13:55:24.562-05:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>B</vceCode>
+          <vceDescription>Basic</vceDescription>
+          <vceEffectiveDate>2019-11-12T13:57:03.968-05:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>27.9356261</addressLatitude>
+        <addressLongitude>-80.6677912</addressLongitude>
+        <geocodeDate>2019-11-12T13:55:24.562-05:00</geocodeDate>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>
