@@ -7,10 +7,8 @@
           <address>
             <city>Cheyenne</city>
             <line1>1121 Hereford Ranch Rd</line1>
-            <postalCode>82007</postalCode>
             <state>WY</state>
             <zipCode>82007</zipCode>
-            <zipPlus4>1110</zipPlus4>
             <addressChangeDateTime>2019-04-12T11:53:05.716-04:00</addressChangeDateTime>
             <addressTypeCode>Residential</addressTypeCode>
           </address>

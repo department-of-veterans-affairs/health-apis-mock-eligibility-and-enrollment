@@ -7,10 +7,8 @@
           <address>
             <city>Rock River</city>
             <line1>212 Hall St</line1>
-            <postalCode>82083</postalCode>
             <state>WY</state>
             <zipCode>82083</zipCode>
-            <zipPlus4>1110</zipPlus4>
             <addressChangeDateTime>2019-09-26T12:59:53.716-04:00</addressChangeDateTime>
             <addressTypeCode>Residential</addressTypeCode>
           </address>

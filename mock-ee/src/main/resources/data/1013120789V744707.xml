@@ -7,10 +7,8 @@
           <address>
             <city>Pine Bluffs</city>
             <line1>509 Market St</line1>
-            <postalCode>82082</postalCode>
             <state>WY</state>
             <zipCode>82082</zipCode>
-            <zipPlus4>1110</zipPlus4>
             <addressChangeDateTime>2019-03-27T09:21:53.716-04:00</addressChangeDateTime>
             <addressTypeCode>Residential</addressTypeCode>
           </address>

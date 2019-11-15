@@ -9,8 +9,6 @@
             <line1>305 5th St</line1>
             <postalCode>82210</postalCode>
             <state>WY</state>
-            <zipCode>82210</zipCode>
-            <zipPlus4>1111</zipPlus4>
             <addressChangeDateTime>2019-09-26T12:59:53.716-04:00</addressChangeDateTime>
             <addressTypeCode>Residential</addressTypeCode>
           </address>
