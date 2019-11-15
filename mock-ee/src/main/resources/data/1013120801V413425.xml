@@ -24,9 +24,6 @@
                     <vceEffectiveDate>1933-07-29T16:23:40.171-04:00</vceEffectiveDate>
                 </eligibility>
             </eligibilities>
-            <geocodingInfo>
-                <geocodeDate>2019-10-28T16:03:40.716-04:00</geocodeDate>
-            </geocodingInfo>
         </communityCareEligibilityInfo>
     </summary>
     <eesVersion>5.6.0.01001</eesVersion>

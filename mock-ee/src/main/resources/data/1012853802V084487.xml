@@ -26,6 +26,8 @@
                 </eligibility>
             </eligibilities>
             <geocodingInfo>
+                <addressLatitude>41.129753</addressLatitude>
+                <addressLongitude>-104.690081</addressLongitude>
                 <geocodeDate>2019-04-12T11:53:05.716-04:00</geocodeDate>
             </geocodingInfo>
         </communityCareEligibilityInfo>

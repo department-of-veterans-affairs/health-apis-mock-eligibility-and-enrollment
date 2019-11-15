@@ -19,6 +19,8 @@
         </demographics>
         <communityCareEligibilityInfo>
             <geocodingInfo>
+                <addressLatitude>41.3049712</addressLatitude>
+                <addressLongitude>-104.8310621</addressLongitude>
                 <geocodeDate>2019-04-30T02:29:49.716-04:00</geocodeDate>
             </geocodingInfo>
         </communityCareEligibilityInfo>
