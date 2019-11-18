@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <country>Mexico</country>
+            <city>Matamoros</city>
+            <line1>Iturbide Entre 9 Y 10</line1>
+            <addressChangeDateTime>2018-12-31T21:00:52.716-04:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>B</vceCode>
+          <vceDescription>Basic</vceDescription>
+          <vceEffectiveDate>1933-07-29T16:23:40.171-04:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>25.885108</addressLatitude>
+        <addressLongitude>-97.510832</addressLongitude>
+        <geocodeDate>2018-12-31T21:00:52.716-04:00</geocodeDate>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>

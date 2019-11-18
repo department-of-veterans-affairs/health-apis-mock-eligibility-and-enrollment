@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>Garrett</city>
+            <line1>63 River Bridge Rd</line1>
+            <state>WY</state>
+            <zipCode>82058</zipCode>
+            <addressChangeDateTime>2019-09-26T12:59:53.716-04:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>B</vceCode>
+          <vceDescription>Basic</vceDescription>
+          <vceEffectiveDate>1933-07-29T16:23:40.171-04:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+      <geocodingInfo>
+        <addressLatitude>42.1174018</addressLatitude>
+        <addressLongitude>-105.6067791</addressLongitude>
+        <geocodeDate>2019-09-26T12:59:53.716-04:00</geocodeDate>
+      </geocodingInfo>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>

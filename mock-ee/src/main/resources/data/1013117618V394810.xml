@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>X</vceCode>
+          <vceDescription>Ineligible</vceDescription>
+          <vceEffectiveDate>1940-02-19T16:23:40.197-05:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-05-01T07:56:02</invocationDate>
+</getEESummaryResponse>
