@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>H</vceCode>
+          <vceDescription>Hardship</vceDescription>
+          <vceEffectiveDate>2019-11-19T15:44:17.413-05:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>N</vceCode>
+          <vceDescription>State No Full Service VA</vceDescription>
+          <vceEffectiveDate>2019-11-19T15:44:17.413-05:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.6.0.01001</eesVersion>
+  <invocationDate>2019-11-19T07:56:02</invocationDate>
+</getEESummaryResponse>
