@@ -97,7 +97,8 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     MessageDispatcherServlet servlet = new MessageDispatcherServlet();
     servlet.setApplicationContext(applicationContext);
     servlet.setTransformWsdlLocations(true);
-    return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, MOCK_EE_VERSION + "/ws/*");
+    return new ServletRegistrationBean<MessageDispatcherServlet>(
+        servlet, MOCK_EE_VERSION + "/ws/*");
   }
 
   /** Validation for user/password. */
