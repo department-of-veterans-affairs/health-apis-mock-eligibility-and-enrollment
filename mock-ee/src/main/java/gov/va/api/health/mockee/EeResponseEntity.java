@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EeResponseEntity {
-
   @EqualsAndHashCode.Include @Id private String icn;
 
   private String payload;

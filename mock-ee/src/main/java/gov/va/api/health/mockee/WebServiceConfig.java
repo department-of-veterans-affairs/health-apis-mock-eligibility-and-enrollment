@@ -36,8 +36,7 @@ import org.w3c.dom.NodeList;
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
-
-  public static final String mockEeVersion = "/v0";
+  public static final String MOCK_EE_VERSION = "/v0";
 
   @Value("${ee.header.username}")
   private String eeHeaderUsername;
@@ -50,12 +49,12 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     interceptors.add(securityInterceptor());
   }
 
-  /** Default Wsdl. */
+  /** Default WSDL. */
   @Bean(name = "eeSummary")
   public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema eeSchema) {
     DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
     wsdl11Definition.setPortTypeName("eeSummaryPort");
-    wsdl11Definition.setLocationUri(mockEeVersion + "/ws");
+    wsdl11Definition.setLocationUri(MOCK_EE_VERSION + "/ws");
     wsdl11Definition.setTargetNamespace("http://jaxws.webservices.esr.med.va.gov/schemas");
     wsdl11Definition.setSchema(eeSchema);
     return wsdl11Definition;
@@ -91,14 +90,14 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     }
   }
 
-  /** Set up Servlet. */
+  /** Set up servlet. */
   @Bean
   public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(
       ApplicationContext applicationContext) {
     MessageDispatcherServlet servlet = new MessageDispatcherServlet();
     servlet.setApplicationContext(applicationContext);
     servlet.setTransformWsdlLocations(true);
-    return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, mockEeVersion + "/ws/*");
+    return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, MOCK_EE_VERSION + "/ws/*");
   }
 
   /** Validation for user/password. */
@@ -112,7 +111,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     return callbackHandler;
   }
 
-  /** Security Interceptor. */
+  /** Security interceptor. */
   @Bean
   public Wss4jSecurityInterceptor securityInterceptor() {
     Wss4jSecurityInterceptor securityInterceptor = new Wss4jSecurityInterceptor();
