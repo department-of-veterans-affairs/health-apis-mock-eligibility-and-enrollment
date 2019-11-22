@@ -4,8 +4,8 @@
     <communityCareEligibilityInfo>
       <eligibilities>
         <eligibility>
-          <vceCode>B</vceCode>
-          <vceDescription>Basic</vceDescription>
+          <vceCode>X</vceCode>
+          <vceDescription>Ineligible</vceDescription>
           <vceEffectiveDate>1940-02-19T16:23:40.197-05:00</vceEffectiveDate>
         </eligibility>
       </eligibilities>
