@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.io.StringWriter;
 import java.util.List;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;

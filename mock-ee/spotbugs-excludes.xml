@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
   <Match>
-    <Method name="equals"/>
+    <Or>
+      <Method name="equals"/>
+      <Method name="hashCode"/>
+    </Or>
     <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
   </Match>
   <Match>
-    <Method name="hashCode"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    <Method name="initData"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
   </Match>
 </FindBugsFilter>

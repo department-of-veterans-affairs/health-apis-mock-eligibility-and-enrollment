@@ -1,5 +1,7 @@
 package gov.va.api.health.mockee;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
 import java.io.InputStream;
@@ -30,15 +32,6 @@ public class EeSummaryEndpoint {
 
   @PersistenceContext private EntityManager entityManager;
 
-  /** Find the EeResponseEntity mapped to the icn.* */
-  public EeResponseEntity findEeResponseEntity(String icn) {
-    EeResponseEntity entity = entityManager.find(EeResponseEntity.class, icn);
-    if (entity == null) {
-      throw new UnknownPatientIcnException();
-    }
-    return entity;
-  }
-
   /** Get EE Summary Response. */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getEESummaryRequest")
   @ResponsePayload
@@ -46,14 +39,17 @@ public class EeSummaryEndpoint {
   public JAXBElement<GetEESummaryResponse> getEeSummaryRequest(
       @RequestPayload JAXBElement<GetEESummaryRequest> request) {
     final String icn = request.getValue().getKey();
-    EeResponseEntity responseEntity = findEeResponseEntity(icn);
+    EeResponseEntity responseEntity = entityManager.find(EeResponseEntity.class, icn);
+    if (responseEntity == null) {
+      throw new UnknownPatientIcnException();
+    }
     String payload = responseEntity.payload();
     return JAXBContext.newInstance(GetEESummaryResponse.class)
         .createUnmarshaller()
         .unmarshal(new StreamSource(new StringReader(payload)), GetEESummaryResponse.class);
   }
 
-  /** Create EeResponseEntity for each data file, persist EntityManager. */
+  /** Persist EeResponseEntity for each data file. */
   @SneakyThrows
   @Transactional
   @EventListener(ApplicationStartedEvent.class)
@@ -62,9 +58,7 @@ public class EeSummaryEndpoint {
         new PathMatchingResourcePatternResolver().getResources("classpath*:data/*.xml");
     for (Resource resource : resources) {
       String filename = resource.getFilename();
-      if (filename == null) {
-        throw new IllegalStateException("Invalid filename for resource " + resource);
-      }
+      checkState(filename != null);
       String icn = filename.substring(0, filename.indexOf("."));
       try (InputStream inputStream = resource.getInputStream()) {
         String xml = IOUtils.toString(inputStream, "UTF-8");
