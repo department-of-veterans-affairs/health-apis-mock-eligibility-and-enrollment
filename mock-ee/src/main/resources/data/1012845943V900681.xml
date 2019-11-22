@@ -5,8 +5,8 @@
       <contactInfo>
         <addresses>
           <address>
-            <country>Mexico</country>
             <city>Matamoros</city>
+            <country>Mexico</country>
             <line1>Iturbide Entre 9 Y 10</line1>
             <addressChangeDateTime>2018-12-31T21:00:52.716-04:00</addressChangeDateTime>
             <addressTypeCode>Residential</addressTypeCode>
