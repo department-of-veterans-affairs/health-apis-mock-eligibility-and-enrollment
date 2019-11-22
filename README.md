@@ -15,8 +15,8 @@ To invoke, post to the `/v0/ws` path. Example request:
   <SOAP-ENV:Header>
     <wsse:Security SOAP-ENV:mustUnderstand="1">
       <wsse:UsernameToken wsu:Id="XWSSGID-1281117217796-43574433">
-        <wsse:Username>MockEEUsername</wsse:Username>
-        <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">MockEEPassword</wsse:Password>
+        <wsse:Username>username</wsse:Username>
+        <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">password</wsse:Password>
       </wsse:UsernameToken>
     </wsse:Security>
   </SOAP-ENV:Header>
@@ -30,9 +30,3 @@ To invoke, post to the `/v0/ws` path. Example request:
 ```
 
 Mock data is stored in XML files within the repository that are loaded into an embedded H2 database upon startup.
-These application properties must be configured:
-
-```
-ee.header.password=MockEEPassword
-ee.header.username=MockEEUsername
-```
