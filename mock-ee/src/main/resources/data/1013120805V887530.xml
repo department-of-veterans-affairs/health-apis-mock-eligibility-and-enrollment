@@ -13,6 +13,11 @@
           <vceDescription>State No Full Service VA</vceDescription>
           <vceEffectiveDate>2019-11-19T15:44:17.413-05:00</vceEffectiveDate>
         </eligibility>
+        <eligibility>
+          <vceCode>U</vceCode>
+          <vceDescription>Urgent Care</vceDescription>
+          <vceEffectiveDate>2019-11-19T15:44:17.413-05:00</vceEffectiveDate>
+        </eligibility>
       </eligibilities>
     </communityCareEligibilityInfo>
   </summary>
