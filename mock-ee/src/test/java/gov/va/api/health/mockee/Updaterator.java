@@ -99,12 +99,7 @@ public final class Updaterator {
     }
 
     Optional<AddressInfo> maybeAddress =
-        eeResponse
-            .getSummary()
-            .getDemographics()
-            .getContactInfo()
-            .getAddresses()
-            .getAddress()
+        eeResponse.getSummary().getDemographics().getContactInfo().getAddresses().getAddress()
             .stream()
             .filter(a -> "Residential".equalsIgnoreCase(a.getAddressTypeCode()))
             .findFirst();
@@ -118,13 +113,7 @@ public final class Updaterator {
           .add(AddressInfo.builder().addressTypeCode("Residential").build());
     }
 
-    eeResponse
-        .getSummary()
-        .getDemographics()
-        .getContactInfo()
-        .getAddresses()
-        .getAddress()
-        .stream()
+    eeResponse.getSummary().getDemographics().getContactInfo().getAddresses().getAddress().stream()
         .filter(a -> "Residential".equalsIgnoreCase(a.getAddressTypeCode()))
         .findFirst()
         .get()

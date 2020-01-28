@@ -4,7 +4,7 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
-    <version>3.1.8</version>
+    <version>5.0.0-SNAPSHOT</version>
     <relativePath/>
   </parent>
   <artifactId>mock-ee-tests</artifactId>
