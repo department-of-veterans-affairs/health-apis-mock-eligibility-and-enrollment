@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
+  <summary>
+    <demographics>
+      <contactInfo>
+        <addresses>
+          <address>
+            <city>CANONSBURG</city>
+            <country>USA</country>
+            <county>WASHINGTON</county>
+            <line1>1066 ROYAL DR</line1>
+            <state>PA</state>
+            <zipCode>15317</zipCode>
+            <zipPlus4>5040</zipPlus4>
+            <addressChangeDateTime>2003-10-17T10:44:04.000-05:00</addressChangeDateTime>
+            <addressTypeCode>Permanent</addressTypeCode>
+            <contactMethodType>08</contactMethodType>
+            <contactMethodReportDate>2019-05-14T12:17:41.000-05:00</contactMethodReportDate>
+          </address>
+          <address>
+            <city>CANONSBURG</city>
+            <country>USA</country>
+            <county>WASHINGTON</county>
+            <line1>1066 ROYAL DR</line1>
+            <state>PA</state>
+            <zipCode>15317</zipCode>
+            <zipPlus4>5040</zipPlus4>
+            <addressChangeDateTime>2003-10-17T10:44:04.000-05:00</addressChangeDateTime>
+            <addressTypeCode>Residential</addressTypeCode>
+          </address>
+          <address>
+            <city>CANONSBURG</city>
+            <country>USA</country>
+            <county>WASHINGTON</county>
+            <line1>1066 ROYAL DR</line1>
+            <state>PA</state>
+            <zipCode>15317</zipCode>
+            <zipPlus4>5040</zipPlus4>
+            <addressChangeDateTime>2003-10-17T10:44:04.000-05:00</addressChangeDateTime>
+            <addressTypeCode>Mailing</addressTypeCode>
+          </address>
+        </addresses>
+      </contactInfo>
+    </demographics>
+    <communityCareEligibilityInfo>
+      <eligibilities>
+        <eligibility>
+          <vceCode>H</vceCode>
+          <vceDescription>Hardship</vceDescription>
+          <vceEffectiveDate>2019-04-18T15:27:02.000-05:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>G</vceCode>
+          <vceDescription>Grandfathered</vceDescription>
+          <vceEffectiveDate>2019-04-18T15:27:02.000-05:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>N</vceCode>
+          <vceDescription>State No Full-Service VA</vceDescription>
+          <vceEffectiveDate>2019-04-18T15:27:02.000-05:00</vceEffectiveDate>
+        </eligibility>
+        <eligibility>
+          <vceCode>U</vceCode>
+          <vceDescription>Urgent Care</vceDescription>
+          <vceEffectiveDate>2019-04-18T15:27:02.000-05:00</vceEffectiveDate>
+        </eligibility>
+      </eligibilities>
+    </communityCareEligibilityInfo>
+  </summary>
+  <eesVersion>5.12.0.05003</eesVersion>
+  <invocationDate>2020-06-03T12:30:53</invocationDate>
+</getEESummaryResponse>
