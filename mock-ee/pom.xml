@@ -14,14 +14,8 @@
     <apache.ws.security>1.6.19</apache.ws.security>
     <ee-artifacts.version>3.0.6</ee-artifacts.version>
     <h2.version>1.4.199</h2.version>
-    <jacoco.coverage>0.94</jacoco.coverage>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.7</version>
-    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
