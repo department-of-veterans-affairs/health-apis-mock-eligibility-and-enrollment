@@ -2,6 +2,7 @@ package gov.va.api.health.mockee;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.List;
 import javax.xml.XMLConstants;
@@ -11,7 +12,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -77,7 +77,9 @@ public class WebServiceConfig extends WsConfigurerAdapter {
       StreamResult result = new StreamResult(writer);
       transformer.transform(new DOMSource(schemaNode), result);
       String xsd = writer.toString();
-      return new SimpleXsdSchema(new InputStreamResource(IOUtils.toInputStream(xsd, "UTF-8")));
+      try (ByteArrayInputStream bais = new ByteArrayInputStream(xsd.getBytes("UTF-8"))) {
+        return new SimpleXsdSchema(new InputStreamResource(bais));
+      }
     }
   }
 
@@ -88,7 +90,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     MessageDispatcherServlet servlet = new MessageDispatcherServlet();
     servlet.setApplicationContext(applicationContext);
     servlet.setTransformWsdlLocations(true);
-    return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, URL + "/*");
+    return new ServletRegistrationBean<>(servlet, URL + "/*");
   }
 
   /** Security interceptor. */

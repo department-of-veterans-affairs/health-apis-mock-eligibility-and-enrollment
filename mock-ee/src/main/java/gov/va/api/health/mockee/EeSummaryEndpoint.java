@@ -1,10 +1,13 @@
 package gov.va.api.health.mockee;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.stream.Collectors.joining;
 
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryRequest;
 import gov.va.med.esr.webservices.jaxws.schemas.GetEESummaryResponse;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,7 +16,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.transform.stream.StreamSource;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -60,8 +62,9 @@ public class EeSummaryEndpoint {
       String filename = resource.getFilename();
       checkState(filename != null);
       String icn = filename.substring(0, filename.indexOf("."));
-      try (InputStream inputStream = resource.getInputStream()) {
-        String xml = IOUtils.toString(inputStream, "UTF-8");
+      try (InputStream inputStream = resource.getInputStream();
+          BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
+        String xml = reader.lines().collect(joining("\n"));
         entityManager.persist(EeResponseEntity.builder().icn(icn).payload(xml).build());
       }
     }
