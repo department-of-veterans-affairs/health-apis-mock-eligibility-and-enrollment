@@ -1,73 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <getEESummaryResponse xmlns="http://jaxws.webservices.esr.med.va.gov/schemas">
   <summary>
-    <demographics>
-      <contactInfo>
-        <addresses>
-          <address>
-            <city>N FT MYERS</city>
-            <country>USA</country>
-            <county>LEE COUNTY</county>
-            <line1>1637 VIVIAN LN</line1>
-            <state>FL</state>
-            <zipCode>33903</zipCode>
-            <zipPlus4>3731</zipPlus4>
-            <addressChangeDateTime>2016-01-07T11:47:46.000-06:00</addressChangeDateTime>
-            <addressChangeSite>516 - C.W. BILL YOUNG DEPT OF VAMC</addressChangeSite>
-            <addressChangeSource>Veterans Affairs Medical Center</addressChangeSource>
-            <addressTypeCode>Residential</addressTypeCode>
-          </address>
-          <address>
-            <city>FORT MYERS</city>
-            <country>USA</country>
-            <county>LEE</county>
-            <line1>2525 1ST ST</line1>
-            <line2>APT A 224</line2>
-            <state>FL</state>
-            <zipCode>33901</zipCode>
-            <addressChangeDateTime>2016-01-07T11:47:57.000-06:00</addressChangeDateTime>
-            <addressChangeEffectiveDate>20140604</addressChangeEffectiveDate>
-            <addressChangeSite>516 - C.W. BILL YOUNG DEPT OF VAMC</addressChangeSite>
-            <addressChangeSource>Veterans Affairs Medical Center</addressChangeSource>
-            <addressTypeCode>Temporary</addressTypeCode>
-            <endDate>20160107114757</endDate>
-            <contactMethodType>08</contactMethodType>
-            <contactMethodReportDate>2016-01-08T02:20:38.000-06:00</contactMethodReportDate>
-          </address>
-          <address>
-            <city>N FT MYERS</city>
-            <country>USA</country>
-            <county>LEE</county>
-            <line1>1637 VIVIAN LN</line1>
-            <state>FL</state>
-            <zipCode>33903</zipCode>
-            <addressChangeDateTime>2020-01-30T07:23:56.000-06:00</addressChangeDateTime>
-            <addressChangeSite>516 - C.W. BILL YOUNG DEPT OF VAMC</addressChangeSite>
-            <addressChangeSource>Veterans Affairs Medical Center</addressChangeSource>
-            <addressTypeCode>Permanent</addressTypeCode>
-            <badAddressReason>Address could not be shared for some reason other than "homeless" or "undeliverable"</badAddressReason>
-            <contactMethodType>08</contactMethodType>
-            <contactMethodReportDate>2020-01-31T00:53:44.000-06:00</contactMethodReportDate>
-          </address>
-        </addresses>
-      </contactInfo>
-    </demographics>
     <communityCareEligibilityInfo>
       <eligibilities>
         <eligibility>
-          <vceCode>X</vceCode>
-          <vceDescription>Not Eligible</vceDescription>
-          <vceEffectiveDate>2020-01-30T16:00:02.000-06:00</vceEffectiveDate>
+          <vceCode>H</vceCode>
+          <vceDescription>Hardship</vceDescription>
+          <vceEffectiveDate>2020-08-12T08:55:24.000-05:00</vceEffectiveDate>
         </eligibility>
       </eligibilities>
-      <geocodingInfo>
-        <addressLatitude>26.68126</addressLatitude>
-        <addressLongitude>-81.887742</addressLongitude>
-        <geocodeDate>2019-05-02T09:01:18.000-05:00</geocodeDate>
-        <geocodePointAccuracy>USA_ZIP4.PointAddress</geocodePointAccuracy>
-      </geocodingInfo>
     </communityCareEligibilityInfo>
   </summary>
   <eesVersion>5.12.0.05003</eesVersion>
-  <invocationDate>2020-08-11T13:25:59</invocationDate>
+  <invocationDate>2020-08-12T10:09:45</invocationDate>
 </getEESummaryResponse>
