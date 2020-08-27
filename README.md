@@ -11,13 +11,13 @@ Refer to [health-apis-parent](https://github.com/department-of-veterans-affairs/
 for basic environment setup. (Java, Maven, Docker, etc.)
 Execute `mvn clean install` to build all of the modules.
 
-To run locally:
+Run locally:
 
 ```
 java -jar mock-ee/target/mock-ee-${VERSION}.jar
 ```
 
-To view the WSDL: 
+View WSDL: 
 
 ```
 curl http://localhost:9090/v0/ws/eeSummary.wsdl
@@ -26,7 +26,7 @@ curl http://localhost:9090/v0/ws/eeSummary.wsdl
 Sample request:
 
 ```
-curl -X POST -H "Content-Type: text/xml"  -d @request.xml http://localhost:9090/v0/ws
+curl -X POST -H "Content-Type: text/xml" -d @request.xml http://localhost:9090/v0/ws
 
 request.xml:
 <SOAP-ENV:Envelope
