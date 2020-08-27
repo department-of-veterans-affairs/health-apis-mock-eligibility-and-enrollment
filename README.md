@@ -4,9 +4,31 @@ A [Spring Boot](https://spring.io/projects/spring-boot) microservice
 that emulates the Eligibility and Enrollment (E&E) service.
 This can be used to provide synthetic E&E data outside the VA Intranet.
 
-To invoke, post to the `/v0/ws` path. Example request:
+Mock data is managed [here](mock-ee/src/main/resources/data).
+
+## Local Development
+Refer to [health-apis-parent](https://github.com/department-of-veterans-affairs/health-apis-parent)
+for basic environment setup. (Java, Maven, Docker, etc.)
+Execute `mvn clean install` to build all of the modules.
+
+Run locally:
 
 ```
+java -jar mock-ee/target/mock-ee-${VERSION}.jar
+```
+
+View WSDL: 
+
+```
+curl http://localhost:9090/v0/ws/eeSummary.wsdl
+```
+
+Sample request:
+
+```
+curl -X POST -H "Content-Type: text/xml" -d @request.xml http://localhost:9090/v0/ws
+
+request.xml:
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
  xmlns:sch="http://jaxws.webservices.esr.med.va.gov/schemas"
@@ -28,5 +50,3 @@ To invoke, post to the `/v0/ws` path. Example request:
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ```
-
-Mock data is stored in XML files within the repository that are loaded into an embedded H2 database upon startup.
