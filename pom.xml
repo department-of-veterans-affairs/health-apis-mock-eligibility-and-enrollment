@@ -7,7 +7,7 @@
     <version>7.0.20</version>
   </parent>
   <artifactId>mock-ee-parent</artifactId>
-  <version>3.0.7</version>
+  <version>3.0.8-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>mock-ee</module>
