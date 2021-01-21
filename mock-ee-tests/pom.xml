@@ -8,7 +8,7 @@
     <relativePath/>
   </parent>
   <artifactId>mock-ee-tests</artifactId>
-  <version>3.0.7-SNAPSHOT</version>
+  <version>3.0.7</version>
   <properties>
     <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
     <docker.organization>vasdvp</docker.organization>
