@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>health-apis-parent</artifactId>
-    <version>7.0.20</version>
+    <version>7.0.24</version>
     <relativePath/>
   </parent>
   <artifactId>mock-ee-tests</artifactId>
-  <version>3.0.8-SNAPSHOT</version>
+  <version>3.0.8</version>
   <properties>
     <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
     <docker.organization>vasdvp</docker.organization>
