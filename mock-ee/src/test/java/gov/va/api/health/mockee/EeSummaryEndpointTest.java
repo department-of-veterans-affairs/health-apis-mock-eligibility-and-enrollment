@@ -2,6 +2,7 @@ package gov.va.api.health.mockee;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gov.va.med.esr.webservices.jaxws.schemas.AddressCollection;
 import gov.va.med.esr.webservices.jaxws.schemas.AddressInfo;
@@ -22,13 +23,10 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import lombok.SneakyThrows;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class, WebServiceConfig.class})
 public class EeSummaryEndpointTest {
   @Autowired EeSummaryEndpoint eeSummaryEndpoint;
@@ -107,15 +105,20 @@ public class EeSummaryEndpointTest {
                 .build());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void initDataError() {
-    new EeSummaryEndpoint(null).initData();
+    assertThatExceptionOfType(RuntimeException.class)
+        .isThrownBy(() -> new EeSummaryEndpoint(null).initData());
   }
 
-  @Test(expected = EeSummaryEndpoint.UnknownPatientIcnException.class)
+  @Test
   public void noEntriesAreFound() {
-    eeSummaryEndpoint.getEeSummaryRequest(
-        new ObjectFactory()
-            .createGetEESummaryRequest(GetEESummaryRequest.builder().key("100").build()));
+    assertThatExceptionOfType(EeSummaryEndpoint.UnknownPatientIcnException.class)
+        .isThrownBy(
+            () ->
+                eeSummaryEndpoint.getEeSummaryRequest(
+                    new ObjectFactory()
+                        .createGetEESummaryRequest(
+                            GetEESummaryRequest.builder().key("100").build())));
   }
 }
