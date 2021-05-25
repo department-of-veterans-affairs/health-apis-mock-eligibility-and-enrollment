@@ -4,7 +4,7 @@
   <parent>
     <groupId>gov.va.api.health</groupId>
     <artifactId>service-starter</artifactId>
-    <version>7.0.24</version>
+    <version>8.0.0</version>
     <relativePath/>
   </parent>
   <artifactId>mock-ee</artifactId>
@@ -16,6 +16,11 @@
     <h2.version>1.4.199</h2.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>${error-prone.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
