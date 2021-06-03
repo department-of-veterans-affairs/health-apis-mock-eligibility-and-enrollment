@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/** WebServiceConfig. */
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
