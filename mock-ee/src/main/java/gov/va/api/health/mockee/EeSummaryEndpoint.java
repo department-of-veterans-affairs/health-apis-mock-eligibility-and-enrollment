@@ -27,6 +27,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+/** EeSummaryEndpoint. */
 @AllArgsConstructor(onConstructor = @__({@Autowired}))
 @Endpoint
 public class EeSummaryEndpoint {
